@@ -1,4 +1,4 @@
-# Welcome to your Lovable project
+# ControL-D - AI driven Digital Health Assistant:
 
 ## Project info
 
