@@ -34,6 +34,12 @@ export default function SmartDashboard() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
   const [dayData, setDayData] = useState<DayData | null>(null);
+  const [showSplash, setShowSplash] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowSplash(false), 2500);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -59,10 +65,15 @@ export default function SmartDashboard() {
     setDayData(getDayData());
   }, [router]);
 
-  if (isAuthenticated === null) {
+  if (isAuthenticated === null || showSplash) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]" suppressHydrationWarning>
-        <div className="animate-spin rounded-full h-10 w-10 border-4 border-white border-t-transparent" suppressHydrationWarning />
+      <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black" suppressHydrationWarning>
+        <div className="flex flex-col items-center gap-5 animate-in fade-in zoom-in duration-700">
+          <div className="w-24 h-24 bg-white rounded-[2rem] flex items-center justify-center shadow-[0_0_50px_rgba(255,255,255,0.2)]">
+            <Activity className="w-12 h-12 text-black" />
+          </div>
+          <h1 className="text-3xl font-heading font-black text-white tracking-widest uppercase">ControL-D</h1>
+        </div>
       </div>
     );
   }

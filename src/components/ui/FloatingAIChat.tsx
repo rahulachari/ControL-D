@@ -89,7 +89,7 @@ export default function FloatingAIChat() {
   };
 
   return (
-    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[90] flex flex-col items-end pointer-events-auto" suppressHydrationWarning>
+    <div className="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 z-[90] flex flex-col items-end pointer-events-auto" suppressHydrationWarning>
       
       {/* Floating Popup Window */}
       {isOpen && (
@@ -200,16 +200,16 @@ export default function FloatingAIChat() {
       {/* Floating Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="group w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white hover:scale-105 shadow-[0_0_30px_rgba(255,255,255,0.3)] flex items-center justify-center transition-all duration-300 z-[96] relative"
+        className="group w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white hover:scale-105 shadow-[0_0_30px_rgba(255,255,255,0.3)] flex items-center justify-center transition-all duration-300 z-[96] relative"
         title="AI Health Coach"
       >
-        <div className="relative flex items-center justify-center" suppressHydrationWarning>
+        <div className="relative flex items-center justify-center w-full h-full" suppressHydrationWarning>
           {isOpen ? (
-            <ChevronDown className="w-6 h-6 text-black" />
+            <ChevronDown className="w-6 h-6 sm:w-7 sm:h-7 text-black" />
           ) : (
             <>
-              <Bot className="w-5 h-5 sm:w-6 sm:h-6 text-black" />
-              <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-black border-2 border-white animate-pulse" />
+              <Bot className="w-6 h-6 sm:w-7 sm:h-7 text-black" />
+              <span className="absolute top-1 right-1 w-3.5 h-3.5 rounded-full bg-black border-2 border-white animate-pulse" />
             </>
           )}
         </div>

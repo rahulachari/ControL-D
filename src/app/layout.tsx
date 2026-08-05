@@ -26,10 +26,10 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark overflow-x-hidden`}
       suppressHydrationWarning
     >
-      <body className="min-h-full bg-black text-white relative overflow-x-hidden" suppressHydrationWarning>
+      <body className="min-h-full bg-black text-white relative overflow-x-hidden w-full max-w-[100vw]" suppressHydrationWarning>
         {/* Luxury Monochrome Background Canvas (Optimized for performance) */}
         <div 
           className="fixed inset-0 pointer-events-none z-0"

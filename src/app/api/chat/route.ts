@@ -104,42 +104,13 @@ Rules:
 }
 
 function getLocalFallbackResponse(userMsg: string): string {
-  const msg = userMsg.toLowerCase();
+  return `### ⚠️ Offline Mode
+I am currently running in offline fallback mode because the API key is missing or the connection failed. 
 
-  if (msg.includes("sugar") || msg.includes("glucose") || msg.includes("high") || msg.includes("reading")) {
-    return `### 📊 Blood Sugar Quick Guide
+Here is a general health tip:
+- **Hydration**: Drink 2.5–3L of water daily.
+- **Diet**: Pair carbs with protein & fiber to prevent spikes.
+- **Exercise**: A 15-minute walk after meals helps control sugar.
 
-- **Target Range**: Fasting: 70–100 mg/dL | Post-meal: < 140 mg/dL
-- **High (>180 mg/dL)**: Drink 2 glasses of water & take a 15-min walk.
-- **Low (<70 mg/dL)**: Eat 15g fast carbs (juice/glucose) & recheck in 15m.
-
-*Consult your doctor for emergencies.*`;
-  }
-
-  if (msg.includes("food") || msg.includes("diet") || msg.includes("eat") || msg.includes("rice") || msg.includes("idli") || msg.includes("dosa")) {
-    return `### 🥗 South Indian Diabetic Diet
-
-- **Best Choices**: Pesarattu (whole moong), Ragi Sangati, Foxtail Millet (Korra), Palakura Pappu.
-- **Carb Swap**: Replace white rice with Hand-pounded Rice or Millets.
-- **Rule**: Pair carbs with protein & fiber (e.g. Idli + Sambar) to prevent spikes.
-
-*Consult a nutritionist for custom plans.*`;
-  }
-
-  if (msg.includes("exercise") || msg.includes("walk") || msg.includes("workout")) {
-    return `### 🏃 Exercise for Glucose Control
-
-- **Post-Meal Walks**: A 15-minute walk within 30 min of eating lowers sugar spikes by 20–30%.
-- **Weekly Target**: 150 minutes of moderate aerobic exercise.
-
-*Check blood sugar before intense exercise.*`;
-  }
-
-  return `### 🩺 ControL-D Health Tip
-
-1. **Hydration**: Drink 2.5–3L of water daily.
-2. **Medication**: Take prescribed meds on time.
-3. **Sleep**: Aim for 7–8 hours of restful sleep.
-
-*Always consult your doctor for medical advice.*`;
+*Please configure the Groq API Key in your environment variables to enable personalized AI responses.*`;
 }
