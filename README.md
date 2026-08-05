@@ -1,65 +1,36 @@
-# ControL-D 📋
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-A modern task and productivity app built with React, Vite, TypeScript, and Supabase.
+## Getting Started
 
-## 🚀 Live Demo
+First, run the development server:
 
-[View Live App](https://github.com/rahulachari/ControL-D)
-
-## ✨ Features
-
-- ✅ Task management and organization
-- 🔐 User authentication via Supabase
-- ⚡ Fast and responsive UI
-- 💾 Real-time data storage with Supabase
-
-## 🛠️ Tech Stack
-
-| Technology | Purpose |
-|---|---|
-| React | Frontend UI |
-| TypeScript | Type-safe code |
-| Vite | Fast build tool |
-| Supabase | Backend & Database |
-| CSS | Styling |
-
-## 📦 Installation
-
-1. Clone the repository
-```bash
-git clone https://github.com/rahulachari/ControL-D.git
-```
-
-2. Go into the project folder
-```bash
-cd ControL-D
-```
-
-3. Install dependencies
-```bash
-npm install
-```
-
-4. Create a `.env` file in the root folder
-```env
-VITE_SUPABASE_PROJECT_ID="your-project-id"
-VITE_SUPABASE_PUBLISHABLE_KEY="your-publishable-key"
-VITE_SUPABASE_URL="your-supabase-url"
-```
-
-5. Run the app
 ```bash
 npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-## 🔐 Environment Variables
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-This project uses Supabase. You need to create your own `.env` file with your Supabase credentials. Never commit your `.env` file to GitHub.
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-## 👨‍💻 Developer
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-Made by **Rahul Achari**
+## Learn More
 
----
+To learn more about Next.js, take a look at the following resources:
 
-⭐ If you like this project, give it a star on GitHub!
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

@@ -1,188 +1,274 @@
-import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast";
-import { Sparkles, Calendar, Utensils } from "lucide-react";
-import { format } from "date-fns";
+"use client";
 
-interface MealPlannerProps {
-  userId: string;
+import { useState, useEffect } from "react";
+import { Utensils, Sparkles, Search, Leaf, Flame, Wheat, Droplets, Clock, Info, ChevronDown, ChevronUp, Drumstick, Layers } from "lucide-react";
+import { generateDailyPlan, searchFoods, getGIColor, getGILabel, FoodItem, FOOD_DATABASE, DietPreference } from "@/lib/southIndianDiet";
+import { addMeal } from "@/lib/healthStore";
+import BorderGlow from "@/components/ui/BorderGlow";
+
+const MONO_GLOW = {
+  backgroundColor: "#09090b",
+  glowColor: "0 0 100",
+  colors: ["#ffffff", "#e4e4e7", "#a1a1aa"],
+  borderRadius: 24,
+};
+
+function FoodCard({ food, onLog }: { food: FoodItem; onLog?: (f: FoodItem) => void }) {
+  const [expanded, setExpanded] = useState(false);
+  return (
+    <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-5 shadow-lg hover:border-zinc-700 transition-all flex flex-col h-full">
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-4">
+        <div className="flex-1 min-w-0">
+          <h4 className="text-base font-heading font-black text-white mb-0.5 leading-tight">{food.name}</h4>
+          <span className="text-xs font-bold text-zinc-500 block uppercase tracking-widest">{food.teluguName}</span>
+        </div>
+        <div className="flex items-center gap-2 shrink-0 flex-wrap">
+          <span className={`flex items-center gap-1 text-[10px] px-2 py-1 rounded-full font-black uppercase tracking-widest ${food.isVeg ? "bg-emerald-500 text-white" : "bg-rose-500 text-white"}`}>
+            {food.isVeg ? "Veg" : "Non-Veg"}
+          </span>
+          <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-full bg-zinc-800 text-white`}>
+            GI {food.giScore} • {getGILabel(food.giScore)}
+          </span>
+        </div>
+      </div>
+
+      {/* Macro Grid */}
+      <div className="grid grid-cols-5 gap-1.5 sm:gap-2 text-center my-4 mt-auto">
+        <div className="bg-zinc-950 rounded-2xl py-3 px-1 border border-zinc-800 shadow-inner">
+          <Flame className="w-3.5 h-3.5 text-white mx-auto mb-1" />
+          <span className="text-xs font-black text-white block">{food.calories}</span>
+          <span className="text-[9px] text-zinc-500 font-bold uppercase">kcal</span>
+        </div>
+        <div className="bg-zinc-950 rounded-2xl py-3 px-1 border border-zinc-800 shadow-inner">
+          <Wheat className="w-3.5 h-3.5 text-white mx-auto mb-1" />
+          <span className="text-xs font-black text-white block">{food.carbs}g</span>
+          <span className="text-[9px] text-zinc-500 font-bold uppercase">Carbs</span>
+        </div>
+        <div className="bg-zinc-950 rounded-2xl py-3 px-1 border border-zinc-800 shadow-inner">
+          <Droplets className="w-3.5 h-3.5 text-white mx-auto mb-1" />
+          <span className="text-xs font-black text-white block">{food.protein}g</span>
+          <span className="text-[9px] text-zinc-500 font-bold uppercase">Protein</span>
+        </div>
+        <div className="bg-zinc-950 rounded-2xl py-3 px-1 border border-zinc-800 shadow-inner">
+          <Leaf className="w-3.5 h-3.5 text-white mx-auto mb-1" />
+          <span className="text-xs font-black text-white block">{food.fiber}g</span>
+          <span className="text-[9px] text-zinc-500 font-bold uppercase">Fiber</span>
+        </div>
+        <div className="bg-zinc-950 rounded-2xl py-3 px-1 border border-zinc-800 shadow-inner">
+          <span className={`text-[10px] font-black block leading-none ${food.sugarImpact === "low" ? "text-emerald-400" : food.sugarImpact === "moderate" ? "text-amber-400" : "text-rose-400"}`}>
+            {food.sugarImpact === "low" ? "↓" : food.sugarImpact === "moderate" ? "→" : "↑"}
+          </span>
+          <span className="text-xs font-black text-white block capitalize mt-0.5">{food.sugarImpact}</span>
+          <span className="text-[9px] text-zinc-500 font-bold uppercase">Sugar</span>
+        </div>
+      </div>
+
+      {/* Best time */}
+      <div className="flex items-center justify-center gap-1.5 text-xs font-bold text-zinc-400 mb-3 bg-zinc-950 px-3 py-2 rounded-xl border border-zinc-800 w-full text-center">
+        <Clock className="w-3 h-3 text-white" /> Best time: {food.bestTimeToEat}
+      </div>
+
+      {/* Expand / Collapse */}
+      <button onClick={() => setExpanded(!expanded)} className="flex w-full justify-center items-center gap-1.5 text-xs text-white font-bold hover:text-zinc-300 transition-colors group bg-zinc-800 py-2 rounded-xl mb-2">
+        <Info className="w-3.5 h-3.5" /> {expanded ? "Less Details" : "Why this food? + Tips"}
+        {expanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+      </button>
+
+      {expanded && (
+        <div className="mb-2 pt-3 border-t border-zinc-800 text-xs text-zinc-300 space-y-2.5 px-2">
+          <p><strong className="text-white font-black">Why:</strong> {food.why}</p>
+          <p><strong className="text-white font-black">Cooking Tips:</strong> {food.cookingTips}</p>
+          <p><strong className="text-white font-black">Alternatives:</strong> {food.alternatives.join(", ")}</p>
+        </div>
+      )}
+
+      {/* Log Button */}
+      {onLog && (
+        <button
+          onClick={() => onLog(food)}
+          className="mt-2 w-full py-3.5 rounded-2xl bg-white hover:bg-zinc-200 text-black text-sm font-black transition-all shadow-lg shadow-white/20 flex items-center justify-center gap-2"
+        >
+          <Sparkles className="w-4 h-4" /> Log This Meal
+        </button>
+      )}
+    </div>
+  );
 }
 
-const MealPlanner = ({ userId }: MealPlannerProps) => {
-  const { toast } = useToast();
-  const [meals, setMeals] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [generatingAI, setGeneratingAI] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date());
+export default function MealPlanner() {
+  const [plan, setPlan] = useState<ReturnType<typeof generateDailyPlan> | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<FoodItem[]>([]);
+  const [activeTab, setActiveTab] = useState<"plan" | "search" | "all">("plan");
+  const [dietPref, setDietPref] = useState<DietPreference>("veg");
+  const [loggedMessage, setLoggedMessage] = useState("");
 
   useEffect(() => {
-    fetchMeals();
-  }, [userId, selectedDate]);
+    setPlan(generateDailyPlan(dietPref));
+  }, [dietPref]);
 
-  const fetchMeals = async () => {
-    const dateStr = format(selectedDate, 'yyyy-MM-dd');
-    const { data } = await supabase
-      .from("meal_plans")
-      .select("*")
-      .eq("user_id", userId)
-      .eq("date", dateStr)
-      .order("meal_type");
-
-    if (data) {
-      setMeals(data);
+  useEffect(() => {
+    if (searchQuery.trim().length >= 2) {
+      setSearchResults(searchFoods(searchQuery));
+    } else {
+      setSearchResults([]);
     }
+  }, [searchQuery]);
+
+  const handleLog = (food: FoodItem) => {
+    const mealType = food.category === "snack" ? "evening_snack" : food.category === "side" ? "lunch" : food.category;
+    addMeal({
+      type: mealType as any,
+      name: food.name,
+      calories: food.calories,
+      carbs: food.carbs,
+      protein: food.protein,
+      fiber: food.fiber,
+      giScore: food.giScore,
+      time: new Date().toISOString(),
+    });
+    setLoggedMessage(`✅ ${food.name} logged!`);
+    setTimeout(() => setLoggedMessage(""), 2000);
   };
 
-  const generateAIMealPlan = async () => {
-    setGeneratingAI(true);
-    try {
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", userId)
-        .single();
-
-      if (!profile) throw new Error("Profile not found");
-
-      const { data, error } = await supabase.functions.invoke("generate-meal-plan", {
-        body: {
-          userId,
-          date: format(selectedDate, 'yyyy-MM-dd'),
-          profile: {
-            diabetesType: profile.diabetes_type,
-            dietaryPreferences: profile.dietary_preferences || [],
-            allergies: profile.allergies || [],
-            activityLevel: profile.activity_level,
-          },
-        },
-      });
-
-      if (error) throw error;
-
-      toast({
-        title: "Meal Plan Generated!",
-        description: "Your personalized meal plan is ready",
-      });
-
-      fetchMeals();
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to generate meal plan",
-        variant: "destructive",
-      });
-    } finally {
-      setGeneratingAI(false);
-    }
-  };
-
-  const mealIcons: Record<string, any> = {
-    breakfast: "🍳",
-    lunch: "🥗",
-    dinner: "🍽️",
-    snack: "🍎"
-  };
+  const tabs = [
+    { key: "plan" as const, label: "Today's Plan" },
+    { key: "search" as const, label: "Search Foods" },
+    { key: "all" as const, label: "Full Database" },
+  ];
 
   return (
     <div className="space-y-6">
-      <Card className="glass-card p-6">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h3 className="text-2xl font-semibold flex items-center gap-2 mb-2">
-              <Utensils className="w-6 h-6 text-secondary" />
-              Meal Planner
-            </h3>
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <Calendar className="w-4 h-4" />
-              <input
-                type="date"
-                value={format(selectedDate, 'yyyy-MM-dd')}
-                onChange={(e) => setSelectedDate(new Date(e.target.value))}
-                className="bg-transparent border-none text-foreground"
-              />
-            </div>
-          </div>
-          <Button
-            onClick={generateAIMealPlan}
-            disabled={generatingAI}
-            className="bg-gradient-primary flex items-center gap-2"
-          >
-            <Sparkles className="w-4 h-4" />
-            {generatingAI ? "Generating..." : "Generate AI Meal Plan"}
-          </Button>
-        </div>
 
-        {meals.length === 0 ? (
-          <div className="text-center py-12">
-            <Utensils className="w-16 h-16 text-muted-foreground mx-auto mb-4 opacity-50" />
-            <p className="text-muted-foreground mb-4">No meal plan for this date yet</p>
-            <Button
-              onClick={generateAIMealPlan}
-              disabled={generatingAI}
-              className="bg-gradient-primary"
-            >
-              <Sparkles className="w-4 h-4 mr-2" />
-              Generate with AI
-            </Button>
+      {/* Diet Preference Toggles */}
+      <BorderGlow {...MONO_GLOW} className="w-full">
+        <div className="p-5 flex flex-col sm:flex-row items-center justify-between flex-wrap gap-4">
+          <div className="text-center sm:text-left">
+            <span className="text-xs font-black text-white uppercase tracking-widest block mb-1">Diet Preference</span>
+            <span className="text-xs font-bold text-zinc-500">Rotates daily based on your choice</span>
           </div>
-        ) : (
-          <div className="grid md:grid-cols-2 gap-4">
-            {meals.map((meal) => (
-              <div
-                key={meal.id}
-                className="p-4 rounded-lg bg-muted/20 hover:bg-muted/30 transition-colors"
-              >
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-3xl">{mealIcons[meal.meal_type]}</span>
-                  <div>
-                    <h4 className="font-semibold capitalize">{meal.meal_type}</h4>
-                    {meal.ai_generated && (
-                      <span className="text-xs text-secondary flex items-center gap-1">
-                        <Sparkles className="w-3 h-3" />
-                        AI Generated
-                      </span>
-                    )}
-                  </div>
-                </div>
-                <p className="font-medium text-lg mb-1">{meal.meal_name}</p>
-                {meal.description && (
-                  <p className="text-sm text-muted-foreground mb-3">{meal.description}</p>
-                )}
-                <div className="grid grid-cols-2 gap-2 text-sm">
-                  {meal.calories && (
-                    <div>
-                      <span className="text-muted-foreground">Calories:</span>{" "}
-                      <span className="font-medium">{meal.calories}</span>
-                    </div>
-                  )}
-                  {meal.carbohydrates && (
-                    <div>
-                      <span className="text-muted-foreground">Carbs:</span>{" "}
-                      <span className="font-medium">{meal.carbohydrates}g</span>
-                    </div>
-                  )}
-                  {meal.protein && (
-                    <div>
-                      <span className="text-muted-foreground">Protein:</span>{" "}
-                      <span className="font-medium">{meal.protein}g</span>
-                    </div>
-                  )}
-                  {meal.fiber && (
-                    <div>
-                      <span className="text-muted-foreground">Fiber:</span>{" "}
-                      <span className="font-medium">{meal.fiber}g</span>
-                    </div>
-                  )}
+
+          <div className="flex gap-2 w-full sm:w-auto">
+            {[
+              { key: "veg" as const, label: "Veg", icon: Leaf },
+              { key: "nonveg" as const, label: "Non-Veg", icon: Drumstick },
+              { key: "mixed" as const, label: "Mixed", icon: Layers },
+            ].map((item) => {
+              const Icon = item.icon;
+              const isSelected = dietPref === item.key;
+              return (
+                <button
+                  key={item.key}
+                  onClick={() => setDietPref(item.key)}
+                  className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-4 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all ${
+                    isSelected
+                      ? "bg-white text-black shadow-lg shadow-white/20"
+                      : "bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white"
+                  }`}
+                >
+                  <Icon className="w-3.5 h-3.5" />
+                  {item.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </BorderGlow>
+
+      {/* Tabs */}
+      <div className="flex items-center gap-2 flex-wrap">
+        {tabs.map((tab) => (
+          <button
+            key={tab.key}
+            onClick={() => setActiveTab(tab.key)}
+            className={`flex-1 sm:flex-none px-5 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all ${
+              activeTab === tab.key
+                ? "bg-white text-black shadow-lg shadow-white/20"
+                : "bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white"
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {loggedMessage && (
+        <div className="px-5 py-3 rounded-2xl bg-white text-black text-sm font-black text-center shadow-lg shadow-white/20 animate-in slide-in-from-top-4 duration-300">
+          {loggedMessage}
+        </div>
+      )}
+
+      {/* Today's Plan */}
+      {activeTab === "plan" && plan && (
+        <div className="space-y-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              { label: "🌅 Breakfast", food: plan.breakfast },
+              { label: "🍎 Mid-Morning Snack", food: plan.midMorning },
+              { label: "🍚 Lunch", food: plan.lunch },
+              { label: "☕ Evening Snack", food: plan.eveningSnack },
+              { label: "🌙 Dinner", food: plan.dinner },
+            ].map(({ label, food }) => (
+              <div key={label} className="flex flex-col">
+                <h4 className="text-sm font-heading font-black text-white mb-3 tracking-widest uppercase">{label}</h4>
+                <div className="flex-1">
+                  <FoodCard food={food} onLog={handleLog} />
                 </div>
               </div>
             ))}
           </div>
-        )}
-      </Card>
+
+          {plan.sides.length > 0 && (
+            <div>
+              <h4 className="text-sm font-heading font-black text-white mb-3 mt-8 tracking-widest uppercase border-t border-zinc-800 pt-8">🥘 Recommended Sides</h4>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {plan.sides.map((s, idx) => (
+                  <FoodCard key={`${s.id}-${idx}`} food={s} onLog={handleLog} />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Search */}
+      {activeTab === "search" && (
+        <div className="space-y-6">
+          <div className="relative">
+            <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
+            <input
+              type="text"
+              placeholder="Search foods... (e.g. idli, ragi, chicken)"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-14 pr-6 py-4 rounded-3xl bg-zinc-900 border border-zinc-800 outline-none text-base font-bold text-white placeholder-zinc-500 focus:border-white transition-all shadow-inner"
+            />
+          </div>
+          {searchResults.length > 0 ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {searchResults.map((f, idx) => <FoodCard key={`${f.id}-${idx}`} food={f} onLog={handleLog} />)}
+            </div>
+          ) : searchQuery.length >= 2 ? (
+            <p className="text-sm font-bold text-zinc-500 text-center py-10">No foods found for "{searchQuery}"</p>
+          ) : (
+            <p className="text-sm font-bold text-zinc-500 text-center py-10">Type at least 2 characters to search</p>
+          )}
+        </div>
+      )}
+
+      {/* Full Database */}
+      {activeTab === "all" && (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {(dietPref === "veg"
+            ? FOOD_DATABASE.filter((f) => f.isVeg)
+            : dietPref === "nonveg"
+            ? FOOD_DATABASE.filter((f) => !f.isVeg)
+            : FOOD_DATABASE
+          ).map((f, idx) => (
+            <FoodCard key={`${f.id}-${idx}`} food={f} onLog={handleLog} />
+          ))}
+        </div>
+      )}
     </div>
   );
-};
-
-export default MealPlanner;
+}
