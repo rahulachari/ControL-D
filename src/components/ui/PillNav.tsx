@@ -127,9 +127,9 @@ export default function PillNav({
   } as React.CSSProperties;
 
   return (
-    <div className="pill-nav-container">
+    <div className="pill-nav-container" suppressHydrationWarning>
       <nav className={`pill-nav ${className}`} aria-label="Sidebar Primary" style={cssVars}>
-        <div className="pill-nav-items">
+        <div className="pill-nav-items" suppressHydrationWarning>
           <ul className="pill-list" role="menubar">
             {items.map((item, i) => {
               const Icon = item.icon;

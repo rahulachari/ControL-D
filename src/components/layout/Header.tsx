@@ -168,7 +168,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
               )}
 
               {/* Notification Button & Drawer */}
-              <div className="relative">
+              <div className="relative" suppressHydrationWarning>
                 <button
                   onClick={() => setIsNotifOpen(!isNotifOpen)}
                   title="Notifications"
@@ -232,7 +232,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
                 title="Edit Profile"
                 className="flex items-center gap-2 p-1 sm:px-3 sm:py-1.5 rounded-full bg-zinc-900 border border-zinc-800 hover:border-zinc-600 transition-all text-xs font-bold text-white shadow-md shrink-0"
               >
-                <div className="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center font-extrabold text-xs shadow-[0_0_15px_rgba(255,255,255,0.3)] relative shrink-0">
+                <div className="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center font-extrabold text-xs shadow-[0_0_15px_rgba(255,255,255,0.3)] relative shrink-0" suppressHydrationWarning>
                   {initial}
                   <Settings className="w-3 h-3 absolute -bottom-0.5 -right-0.5 bg-zinc-900 text-white rounded-full p-0.5 sm:hidden border border-zinc-700" />
                 </div>

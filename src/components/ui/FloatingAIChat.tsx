@@ -203,7 +203,7 @@ export default function FloatingAIChat() {
         className="group w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white hover:scale-105 shadow-[0_0_30px_rgba(255,255,255,0.3)] flex items-center justify-center transition-all duration-300 z-[96] relative"
         title="AI Health Coach"
       >
-        <div className="relative flex items-center justify-center">
+        <div className="relative flex items-center justify-center" suppressHydrationWarning>
           {isOpen ? (
             <ChevronDown className="w-6 h-6 text-black" />
           ) : (
