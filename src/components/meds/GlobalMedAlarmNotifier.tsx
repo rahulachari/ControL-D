@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Pill, Bell, VolumeX, CheckCircle, Clock, X } from "lucide-react";
+import { Pill, Bell, VolumeX, CheckCircle, Clock, X, Volume2 } from "lucide-react";
 import { getDayData, saveDayData, type MedEntry } from "@/lib/healthStore";
-import { playAlarmSoundLoop } from "@/lib/audioEffects";
+import { speakMedicationAlert, startRepeatingVoiceAlert, stopSpeech } from "@/lib/speechSynthesis";
 import BorderGlow from "@/components/ui/BorderGlow";
 
 const MONO_GLOW = {
@@ -26,9 +26,6 @@ function format12Hour(time24: string): string {
 
 export default function GlobalMedAlarmNotifier() {
   const [alarmMed, setAlarmMed] = useState<MedEntry | null>(null);
-
-  // Sound loop controller refs
-  const stopAudioFnRef = useRef<(() => void) | null>(null);
   const triggeredAlarmsRef = useRef<Set<string>>(new Set());
 
   // Register Service Worker and request desktop notification permissions
@@ -43,20 +40,16 @@ export default function GlobalMedAlarmNotifier() {
     }
   }, []);
 
-  const stopSignalRef = useRef({ current: false });
-
   const stopAlarm = useCallback(() => {
-    stopSignalRef.current.current = true;
-    if (stopAudioFnRef.current) {
-      stopAudioFnRef.current();
-      stopAudioFnRef.current = null;
-    }
+    stopSpeech();
   }, []);
 
-  const playAlarm = useCallback(() => {
+  const playAlarm = useCallback((med?: MedEntry) => {
     stopAlarm();
-    stopSignalRef.current.current = false;
-    stopAudioFnRef.current = playAlarmSoundLoop(stopSignalRef.current);
+
+    if (med) {
+      startRepeatingVoiceAlert(med.name, med.dosage, med.beforeAfterFood);
+    }
   }, [stopAlarm]);
 
   // App-wide Alarm Monitoring Loop
@@ -84,7 +77,7 @@ export default function GlobalMedAlarmNotifier() {
         if (!triggeredAlarmsRef.current.has(alarmKey)) {
           triggeredAlarmsRef.current.add(alarmKey);
           setAlarmMed(med);
-          playAlarm();
+          playAlarm(med);
 
           // Desktop System Notification
           if ("Notification" in window && Notification.permission === "granted") {
@@ -139,7 +132,7 @@ export default function GlobalMedAlarmNotifier() {
           resetMed.status = "pending";
           saveDayData(resetDay);
           setAlarmMed(resetMed);
-          playAlarm();
+          playAlarm(resetMed);
         }
       }, 10 * 60 * 1000);
     }
@@ -178,7 +171,15 @@ export default function GlobalMedAlarmNotifier() {
               </p>
             </div>
 
-            <div className="pt-2 flex flex-col gap-2.5">
+            {/* Voice Replay Button */}
+            <button
+              onClick={() => speakMedicationAlert(alarmMed.name, alarmMed.dosage, alarmMed.beforeAfterFood)}
+              className="w-full py-2.5 px-4 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all"
+            >
+              <Volume2 className="w-4 h-4 text-pink-400 animate-pulse" /> Replay Loud Voice Alert
+            </button>
+
+            <div className="pt-1 flex flex-col gap-2.5">
               <button
                 onClick={() => handleMarkTaken(alarmMed.id)}
                 className="w-full py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-black font-heading font-black text-xs uppercase tracking-wider shadow-lg shadow-emerald-500/30 flex items-center justify-center gap-2 transition-all hover:scale-[1.02] cursor-pointer"

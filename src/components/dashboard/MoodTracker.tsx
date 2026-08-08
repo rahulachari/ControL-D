@@ -5,10 +5,10 @@ import { setMood as saveMood, getDayData, MoodEntry } from "@/lib/healthStore";
 import { SmilePlus } from "lucide-react";
 import BorderGlow from "@/components/ui/BorderGlow";
 
-const MONO_GLOW = {
-  backgroundColor: "#09090b",
-  glowColor: "0 0 100",
-  colors: ["#ffffff", "#e4e4e7", "#a1a1aa"],
+const OVERVIEW_GLOW = {
+  backgroundColor: "#121421",
+  glowColor: "215 71 34",
+  colors: ["#194793", "#727578", "#121421"],
   borderRadius: 24,
 };
 
@@ -35,13 +35,13 @@ export default function MoodTracker() {
   };
 
   return (
-    <BorderGlow {...MONO_GLOW} className="w-full">
-      <div className="p-6">
+    <BorderGlow {...OVERVIEW_GLOW} className="w-full">
+      <div className="p-6 bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] rounded-[24px] border border-[#727578]/30">
         <div className="flex items-center gap-2.5 mb-4">
-          <div className="w-8 h-8 rounded-2xl bg-white text-black flex items-center justify-center font-bold">
+          <div className="w-8 h-8 rounded-2xl bg-[#194793] text-white flex items-center justify-center font-black shadow-md shadow-[#121421]">
             <SmilePlus className="w-5 h-5" />
           </div>
-          <h3 className="text-lg font-heading font-extrabold text-white">How are you feeling today?</h3>
+          <h3 className="text-lg font-heading font-black text-[#194793] [text-shadow:1.5px_1.5px_0px_#121421]">How are you feeling today?</h3>
         </div>
 
         <div className="grid grid-cols-3 sm:grid-cols-6 gap-2.5">
@@ -49,25 +49,19 @@ export default function MoodTracker() {
             <button
               key={m.value}
               onClick={() => handleMood(m.value)}
-              className={`flex flex-col items-center gap-1.5 px-3 py-3.5 rounded-2xl border transition-all duration-200 ${
+              className={`flex flex-col items-center gap-1.5 px-3 py-3.5 rounded-2xl border transition-all duration-200 cursor-pointer ${
                 currentMood === m.value
-                  ? "bg-white border-white text-black shadow-lg shadow-white/20 scale-105"
-                  : "border-zinc-800 bg-zinc-900 text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                  ? "bg-[#194793] border-[#194793] text-white shadow-lg shadow-[#121421] scale-105"
+                  : "border-[#727578]/40 bg-[#121421] text-zinc-300 hover:border-[#194793] hover:text-[#194793]"
               }`}
             >
               <span className="text-2xl">{m.emoji}</span>
-              <span className="text-[10px] font-extrabold uppercase tracking-wider">
+              <span className="text-[10px] font-black uppercase tracking-wider">
                 {m.label}
               </span>
             </button>
           ))}
         </div>
-
-        {currentMood && (
-          <p className="text-xs text-zinc-400 mt-4 text-center font-medium">
-            Mood logged for today. Correlates emotional wellness with glucose stability and sleep scores.
-          </p>
-        )}
       </div>
     </BorderGlow>
   );

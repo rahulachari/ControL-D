@@ -24,12 +24,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
+      <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark overflow-x-hidden`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
       suppressHydrationWarning
     >
-      <body className="min-h-full bg-black text-white relative overflow-x-hidden w-full max-w-[100vw]" suppressHydrationWarning>
+      <body className="min-h-full bg-black text-white relative w-full" suppressHydrationWarning>
         {/* Luxury Monochrome Background Canvas (Optimized for performance) */}
         <div 
           className="fixed inset-0 pointer-events-none z-0"

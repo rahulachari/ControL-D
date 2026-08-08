@@ -16,69 +16,69 @@ const MONO_GLOW = {
 function FoodCard({ food, onLog }: { food: FoodItem; onLog?: (f: FoodItem) => void }) {
   const [expanded, setExpanded] = useState(false);
   return (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-5 shadow-lg hover:border-zinc-700 transition-all flex flex-col h-full">
+    <div className="bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] border border-[#727578]/30 rounded-3xl p-5 shadow-lg hover:border-[#194793] transition-all flex flex-col h-full">
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-4">
         <div className="flex-1 min-w-0">
-          <h4 className="text-base font-heading font-black text-white mb-0.5 leading-tight">{food.name}</h4>
-          <span className="text-xs font-bold text-zinc-500 block uppercase tracking-widest">{food.teluguName}</span>
+          <h4 className="text-base font-heading font-black text-[#194793] mb-0.5 leading-tight [text-shadow:1px_1px_0px_#121421]">{food.name}</h4>
+          <span className="text-xs font-bold text-zinc-400 block uppercase tracking-widest">{food.teluguName}</span>
         </div>
         <div className="flex items-center gap-2 shrink-0 flex-wrap">
-          <span className={`flex items-center gap-1 text-[10px] px-2 py-1 rounded-full font-black uppercase tracking-widest ${food.isVeg ? "bg-emerald-500 text-white" : "bg-rose-500 text-white"}`}>
+          <span className={`flex items-center gap-1 text-[10px] px-2 py-1 rounded-full font-black uppercase tracking-widest ${food.isVeg ? "bg-[#194793] text-white" : "bg-rose-500 text-white"}`}>
             {food.isVeg ? "Veg" : "Non-Veg"}
           </span>
-          <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-full bg-zinc-800 text-white`}>
+          <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-full bg-[#121421] text-[#194793] border border-[#727578]/40`}>
             GI {food.giScore} • {getGILabel(food.giScore)}
           </span>
         </div>
       </div>
 
       {/* Macro Grid */}
-      <div className="grid grid-cols-5 gap-1.5 sm:gap-2 text-center my-4 mt-auto">
-        <div className="bg-zinc-950 rounded-2xl py-3 px-1 border border-zinc-800 shadow-inner">
-          <Flame className="w-3.5 h-3.5 text-white mx-auto mb-1" />
-          <span className="text-xs font-black text-white block">{food.calories}</span>
-          <span className="text-[9px] text-zinc-500 font-bold uppercase">kcal</span>
+      <div className="grid grid-cols-5 gap-1 sm:gap-2 text-center my-4 mt-auto">
+        <div className="bg-[#121421] rounded-2xl py-2.5 sm:py-3 px-0.5 sm:px-1 border border-[#727578]/30 shadow-inner min-w-0">
+          <Flame className="w-3.5 h-3.5 text-[#194793] mx-auto mb-1" />
+          <span className="text-[11px] sm:text-xs font-black text-white block truncate">{food.calories}</span>
+          <span className="text-[8px] sm:text-[9px] text-zinc-400 font-bold uppercase block">kcal</span>
         </div>
-        <div className="bg-zinc-950 rounded-2xl py-3 px-1 border border-zinc-800 shadow-inner">
-          <Wheat className="w-3.5 h-3.5 text-white mx-auto mb-1" />
-          <span className="text-xs font-black text-white block">{food.carbs}g</span>
-          <span className="text-[9px] text-zinc-500 font-bold uppercase">Carbs</span>
+        <div className="bg-[#121421] rounded-2xl py-2.5 sm:py-3 px-0.5 sm:px-1 border border-[#727578]/30 shadow-inner min-w-0">
+          <Wheat className="w-3.5 h-3.5 text-[#194793] mx-auto mb-1" />
+          <span className="text-[11px] sm:text-xs font-black text-white block truncate">{food.carbs}g</span>
+          <span className="text-[8px] sm:text-[9px] text-zinc-400 font-bold uppercase block">Carbs</span>
         </div>
-        <div className="bg-zinc-950 rounded-2xl py-3 px-1 border border-zinc-800 shadow-inner">
-          <Droplets className="w-3.5 h-3.5 text-white mx-auto mb-1" />
-          <span className="text-xs font-black text-white block">{food.protein}g</span>
-          <span className="text-[9px] text-zinc-500 font-bold uppercase">Protein</span>
+        <div className="bg-[#121421] rounded-2xl py-2.5 sm:py-3 px-0.5 sm:px-1 border border-[#727578]/30 shadow-inner min-w-0">
+          <Droplets className="w-3.5 h-3.5 text-[#194793] mx-auto mb-1" />
+          <span className="text-[11px] sm:text-xs font-black text-white block truncate">{food.protein}g</span>
+          <span className="text-[8px] sm:text-[9px] text-zinc-400 font-bold uppercase block">Protein</span>
         </div>
-        <div className="bg-zinc-950 rounded-2xl py-3 px-1 border border-zinc-800 shadow-inner">
-          <Leaf className="w-3.5 h-3.5 text-white mx-auto mb-1" />
-          <span className="text-xs font-black text-white block">{food.fiber}g</span>
-          <span className="text-[9px] text-zinc-500 font-bold uppercase">Fiber</span>
+        <div className="bg-[#121421] rounded-2xl py-2.5 sm:py-3 px-0.5 sm:px-1 border border-[#727578]/30 shadow-inner min-w-0">
+          <Leaf className="w-3.5 h-3.5 text-[#194793] mx-auto mb-1" />
+          <span className="text-[11px] sm:text-xs font-black text-white block truncate">{food.fiber}g</span>
+          <span className="text-[8px] sm:text-[9px] text-zinc-400 font-bold uppercase block">Fiber</span>
         </div>
-        <div className="bg-zinc-950 rounded-2xl py-3 px-1 border border-zinc-800 shadow-inner">
-          <span className={`text-[10px] font-black block leading-none ${food.sugarImpact === "low" ? "text-emerald-400" : food.sugarImpact === "moderate" ? "text-amber-400" : "text-rose-400"}`}>
+        <div className="bg-[#121421] rounded-2xl py-2.5 sm:py-3 px-0.5 sm:px-1 border border-[#727578]/30 shadow-inner min-w-0">
+          <span className={`text-[10px] font-black block leading-none ${food.sugarImpact === "low" ? "text-[#194793]" : food.sugarImpact === "moderate" ? "text-amber-400" : "text-rose-400"}`}>
             {food.sugarImpact === "low" ? "↓" : food.sugarImpact === "moderate" ? "→" : "↑"}
           </span>
-          <span className="text-xs font-black text-white block capitalize mt-0.5">{food.sugarImpact}</span>
-          <span className="text-[9px] text-zinc-500 font-bold uppercase">Sugar</span>
+          <span className="text-[10px] sm:text-xs font-black text-white block capitalize mt-0.5 truncate">{food.sugarImpact}</span>
+          <span className="text-[8px] sm:text-[9px] text-zinc-400 font-bold uppercase block">Sugar</span>
         </div>
       </div>
 
       {/* Best time */}
-      <div className="flex items-center justify-center gap-1.5 text-xs font-bold text-zinc-400 mb-3 bg-zinc-950 px-3 py-2 rounded-xl border border-zinc-800 w-full text-center">
-        <Clock className="w-3 h-3 text-white" /> Best time: {food.bestTimeToEat}
+      <div className="flex items-center justify-center gap-1.5 text-xs font-bold text-zinc-300 mb-3 bg-[#121421] px-3 py-2 rounded-xl border border-[#727578]/30 w-full text-center">
+        <Clock className="w-3 h-3 text-[#194793]" /> Best time: {food.bestTimeToEat}
       </div>
 
       {/* Expand / Collapse */}
-      <button onClick={() => setExpanded(!expanded)} className="flex w-full justify-center items-center gap-1.5 text-xs text-white font-bold hover:text-zinc-300 transition-colors group bg-zinc-800 py-2 rounded-xl mb-2">
+      <button onClick={() => setExpanded(!expanded)} className="flex w-full justify-center items-center gap-1.5 text-xs text-[#194793] font-black hover:text-white transition-colors group bg-[#121421] border border-[#727578]/30 py-2 rounded-xl mb-2">
         <Info className="w-3.5 h-3.5" /> {expanded ? "Less Details" : "Why this food? + Tips"}
         {expanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
       </button>
 
       {expanded && (
-        <div className="mb-2 pt-3 border-t border-zinc-800 text-xs text-zinc-300 space-y-2.5 px-2">
-          <p><strong className="text-white font-black">Why:</strong> {food.why}</p>
-          <p><strong className="text-white font-black">Cooking Tips:</strong> {food.cookingTips}</p>
-          <p><strong className="text-white font-black">Alternatives:</strong> {food.alternatives.join(", ")}</p>
+        <div className="mb-2 pt-3 border-t border-[#727578]/30 text-xs text-zinc-300 space-y-2.5 px-2">
+          <p><strong className="text-[#194793] font-black">Why:</strong> {food.why}</p>
+          <p><strong className="text-[#194793] font-black">Cooking Tips:</strong> {food.cookingTips}</p>
+          <p><strong className="text-[#194793] font-black">Alternatives:</strong> {food.alternatives.join(", ")}</p>
         </div>
       )}
 
@@ -86,9 +86,9 @@ function FoodCard({ food, onLog }: { food: FoodItem; onLog?: (f: FoodItem) => vo
       {onLog && (
         <button
           onClick={() => onLog(food)}
-          className="mt-2 w-full py-3.5 rounded-2xl bg-white hover:bg-zinc-200 text-black text-sm font-black transition-all shadow-lg shadow-white/20 flex items-center justify-center gap-2"
+          className="mt-2 w-full py-3.5 rounded-2xl bg-[#194793] hover:bg-[#194793]/90 text-white text-sm font-black transition-all shadow-lg shadow-[#121421] flex items-center justify-center gap-2 border border-[#727578]/40"
         >
-          <Sparkles className="w-4 h-4" /> Log This Meal
+          <Sparkles className="w-4 h-4 text-white" /> Log This Meal
         </button>
       )}
     </div>
@@ -142,10 +142,10 @@ export default function MealPlanner() {
 
       {/* Diet Preference Toggles */}
       <BorderGlow {...MONO_GLOW} className="w-full">
-        <div className="p-5 flex flex-col sm:flex-row items-center justify-between flex-wrap gap-4">
+        <div className="p-5 flex flex-col sm:flex-row items-center justify-between flex-wrap gap-4 bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] rounded-[24px] border border-[#727578]/30">
           <div className="text-center sm:text-left">
-            <span className="text-xs font-black text-white uppercase tracking-widest block mb-1">Diet Preference</span>
-            <span className="text-xs font-bold text-zinc-500">Rotates daily based on your choice</span>
+            <span className="text-xs font-black text-[#194793] uppercase tracking-widest block mb-1">Diet Preference</span>
+            <span className="text-xs font-bold text-zinc-400">Rotates daily based on your choice</span>
           </div>
 
           <div className="flex gap-2 w-full sm:w-auto">
@@ -162,8 +162,8 @@ export default function MealPlanner() {
                   onClick={() => setDietPref(item.key)}
                   className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-4 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all ${
                     isSelected
-                      ? "bg-white text-black shadow-lg shadow-white/20"
-                      : "bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white"
+                      ? "bg-[#194793] text-white shadow-lg shadow-[#121421]"
+                      : "bg-[#121421] border border-[#727578]/40 text-zinc-400 hover:text-white"
                   }`}
                 >
                   <Icon className="w-3.5 h-3.5" />
@@ -183,8 +183,8 @@ export default function MealPlanner() {
             onClick={() => setActiveTab(tab.key)}
             className={`flex-1 sm:flex-none px-5 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all ${
               activeTab === tab.key
-                ? "bg-white text-black shadow-lg shadow-white/20"
-                : "bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white"
+                ? "bg-[#194793] text-white shadow-lg shadow-[#121421]"
+                : "bg-[#121421] border border-[#727578]/40 text-zinc-400 hover:text-white"
             }`}
           >
             {tab.label}

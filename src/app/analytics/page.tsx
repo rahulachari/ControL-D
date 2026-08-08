@@ -63,12 +63,12 @@ export default function AnalyticsPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6 pb-12">
+    <div className="max-w-6xl mx-auto space-y-6 pb-28 sm:pb-12">
       <div>
-        <h1 className="text-3xl font-heading font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
-          <BarChart3 className="w-7 h-7 text-violet-500" /> Health Analytics
+        <h1 className="text-3xl font-heading font-black text-[#194793] tracking-tight [text-shadow:2px_2px_0px_#121421] flex items-center gap-2">
+          <BarChart3 className="w-7 h-7 text-[#194793]" /> Health Analytics
         </h1>
-        <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Weekly overview of your health metrics and adherence trends.</p>
+        <p className="text-zinc-300 text-sm mt-1">Weekly overview of your health metrics and adherence trends.</p>
       </div>
 
       {/* Adherence Cards */}
@@ -76,8 +76,8 @@ export default function AnalyticsPage() {
         {metrics.map((m, i) => {
           const Icon = m.icon;
           return (
-            <div key={i} className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border border-white/20 dark:border-slate-800 rounded-2xl p-5 shadow-md text-center">
-              <div className={`w-10 h-10 rounded-xl ${m.bg} ${m.color} flex items-center justify-center mx-auto mb-2`}>
+            <div key={i} className="bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] backdrop-blur-xl border border-[#727578]/30 rounded-2xl p-5 shadow-md text-center">
+              <div className={`w-10 h-10 rounded-xl bg-[#194793] text-white flex items-center justify-center mx-auto mb-2 shadow-md`}>
                 <Icon className="w-5 h-5" />
               </div>
               <div className={`text-2xl font-heading font-bold ${m.color}`}>{m.value}</div>

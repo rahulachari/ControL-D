@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Bot, Send, User, Sparkles, RefreshCw, AlertCircle, Heart, Lightbulb } from "lucide-react";
 import { getProfile, getDayData } from "@/lib/healthStore";
+import FormattedMessage from "@/components/ui/FormattedMessage";
 
 interface Message {
   role: "user" | "assistant";
@@ -149,9 +150,11 @@ export default function AIHealthBot() {
                   : "bg-white/80 dark:bg-slate-800/80 border border-slate-200/60 dark:border-slate-700/60 text-slate-800 dark:text-slate-200 rounded-tl-none shadow-sm"
               }`}
             >
-              <div className="prose dark:prose-invert prose-sm max-w-none whitespace-pre-wrap">
-                {msg.content}
-              </div>
+              {msg.role === "user" ? (
+                <div className="whitespace-pre-wrap leading-relaxed">{msg.content}</div>
+              ) : (
+                <FormattedMessage content={msg.content} />
+              )}
             </div>
           </div>
         ))}

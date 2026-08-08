@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Pill, Plus, Clock, Bell, CheckCircle, XCircle, SkipForward, VolumeX, Calendar, AlertTriangle, Trash2 } from "lucide-react";
+import { Pill, Plus, Clock, Bell, CheckCircle, XCircle, SkipForward, VolumeX, Calendar, AlertTriangle, Trash2, Volume2 } from "lucide-react";
 import { getDayData, saveDayData, type MedEntry } from "@/lib/healthStore";
-import { playAlarmSoundLoop } from "@/lib/audioEffects";
+import { speakMedicationAlert } from "@/lib/speechSynthesis";
 import BorderGlow from "@/components/ui/BorderGlow";
 
 const MONO_GLOW = {
@@ -106,19 +106,19 @@ export default function MedsPage() {
   const adherencePct = totalMeds > 0 ? Math.round((takenMeds / totalMeds) * 100) : 0;
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6 pb-12" suppressHydrationWarning>
+    <div className="max-w-5xl mx-auto space-y-6 pb-28 sm:pb-12" suppressHydrationWarning>
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4" suppressHydrationWarning>
         <div className="flex flex-col gap-1" suppressHydrationWarning>
-          <h1 className="text-2xl sm:text-3xl font-heading font-black text-white tracking-tight flex items-center gap-2">
-            <Pill className="w-7 h-7 text-pink-400" /> Medication Manager
+          <h1 className="text-2xl sm:text-3xl font-heading font-black text-[#194793] tracking-tight [text-shadow:2px_2px_0px_#121421] flex items-center gap-2">
+            <Pill className="w-7 h-7 text-[#194793]" /> Medication Manager
           </h1>
-          <p className="text-xs sm:text-sm text-zinc-400 font-medium">Set 12-hour AM/PM alarms, track prescriptions, and receive audio reminders.</p>
+          <p className="text-xs sm:text-sm text-zinc-300 font-medium">Set 12-hour AM/PM alarms, track prescriptions, and receive audio reminders.</p>
         </div>
         <button
           onClick={() => setShowAddForm(true)}
-          className="px-6 py-3 rounded-full bg-white text-black font-black text-xs sm:text-sm shadow-lg shadow-white/20 hover:scale-105 transition-all flex items-center justify-center gap-2 shrink-0 uppercase tracking-wider"
+          className="px-6 py-3 rounded-full bg-[#194793] text-white font-black text-xs sm:text-sm shadow-lg shadow-[#121421] hover:scale-105 transition-all flex items-center justify-center gap-2 shrink-0 uppercase tracking-wider border border-[#727578]/40"
         >
           <Plus className="w-4 h-4" /> Add Medicine
         </button>
@@ -127,27 +127,27 @@ export default function MedsPage() {
       {/* ===== Stats ===== */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4" suppressHydrationWarning>
         <BorderGlow {...MONO_GLOW} className="w-full">
-          <div className="p-4 text-center" suppressHydrationWarning>
-            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500 block">Total Today</span>
-            <div className="text-2xl font-heading font-black text-white mt-1" suppressHydrationWarning>{totalMeds}</div>
+          <div className="p-4 text-center bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] rounded-[24px] border border-[#727578]/30" suppressHydrationWarning>
+            <span className="text-[10px] font-black uppercase tracking-widest text-[#194793] block">Total Today</span>
+            <div className="text-2xl font-heading font-black text-[#194793] mt-1 [text-shadow:1.5px_1.5px_0px_#121421]" suppressHydrationWarning>{totalMeds}</div>
           </div>
         </BorderGlow>
         <BorderGlow {...MONO_GLOW} className="w-full">
-          <div className="p-4 text-center" suppressHydrationWarning>
-            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500 block">Taken</span>
-            <div className="text-2xl font-heading font-black text-emerald-400 mt-1" suppressHydrationWarning>{takenMeds}</div>
+          <div className="p-4 text-center bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] rounded-[24px] border border-[#727578]/30" suppressHydrationWarning>
+            <span className="text-[10px] font-black uppercase tracking-widest text-[#194793] block">Taken</span>
+            <div className="text-2xl font-heading font-black text-[#194793] mt-1 [text-shadow:1.5px_1.5px_0px_#121421]" suppressHydrationWarning>{takenMeds}</div>
           </div>
         </BorderGlow>
         <BorderGlow {...MONO_GLOW} className="w-full">
-          <div className="p-4 text-center" suppressHydrationWarning>
-            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500 block">Missed</span>
-            <div className="text-2xl font-heading font-black text-rose-400 mt-1" suppressHydrationWarning>{missedMeds}</div>
+          <div className="p-4 text-center bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] rounded-[24px] border border-[#727578]/30" suppressHydrationWarning>
+            <span className="text-[10px] font-black uppercase tracking-widest text-[#194793] block">Missed</span>
+            <div className="text-2xl font-heading font-black text-rose-400 mt-1 [text-shadow:1.5px_1.5px_0px_#121421]" suppressHydrationWarning>{missedMeds}</div>
           </div>
         </BorderGlow>
         <BorderGlow {...MONO_GLOW} className="w-full">
-          <div className="p-4 text-center" suppressHydrationWarning>
-            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500 block">Adherence</span>
-            <div className="text-2xl font-heading font-black text-white mt-1" suppressHydrationWarning>{adherencePct}%</div>
+          <div className="p-4 text-center bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] rounded-[24px] border border-[#727578]/30" suppressHydrationWarning>
+            <span className="text-[10px] font-black uppercase tracking-widest text-[#194793] block">Adherence</span>
+            <div className="text-2xl font-heading font-black text-[#194793] mt-1 [text-shadow:1.5px_1.5px_0px_#121421]" suppressHydrationWarning>{adherencePct}%</div>
           </div>
         </BorderGlow>
       </div>
@@ -161,7 +161,18 @@ export default function MedsPage() {
             </h3>
             <form onSubmit={handleAddMed} className="grid md:grid-cols-2 gap-4">
               <div>
-                <label className="text-xs font-black uppercase tracking-wider text-zinc-400 mb-1 block">Medicine Name *</label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-xs font-black uppercase tracking-wider text-zinc-400">Medicine Name *</label>
+                  {name.trim() && (
+                    <button
+                      type="button"
+                      onClick={() => speakMedicationAlert(name, dosage, beforeAfterFood)}
+                      className="text-[10px] font-bold text-pink-400 hover:text-pink-300 flex items-center gap-1 bg-zinc-900 px-2 py-0.5 rounded-md border border-zinc-800"
+                    >
+                      <Volume2 className="w-3 h-3" /> Hear Voice
+                    </button>
+                  )}
+                </div>
                 <input type="text" required value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Metformin"
                   className="w-full px-4 py-3 rounded-2xl bg-zinc-900 border border-zinc-800 outline-none text-sm font-bold text-white placeholder-zinc-500 focus:border-white transition-all" />
               </div>
@@ -338,6 +349,14 @@ export default function MedsPage() {
 
                     {/* Action buttons */}
                     <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto border-t border-zinc-800 sm:border-0 pt-2 sm:pt-0 w-full sm:w-auto justify-end">
+                      <button
+                        onClick={() => speakMedicationAlert(med.name, med.dosage, med.beforeAfterFood)}
+                        title="Test Voice Announcement"
+                        className="p-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-700 transition-colors flex items-center gap-1 text-xs font-bold"
+                      >
+                        <Volume2 className="w-4 h-4 text-pink-400" />
+                        <span className="hidden sm:inline">Voice Alert</span>
+                      </button>
                       {isPending && (
                         <>
                           <button onClick={() => handleStatusChange(med.id, "taken")} className="px-4 py-2 rounded-xl bg-white text-black text-xs font-black shadow-md hover:scale-105 transition-all">

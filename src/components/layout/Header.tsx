@@ -10,10 +10,10 @@ interface HeaderProps {
   onMenuClick?: () => void;
 }
 
-const MONO_GLOW = {
-  backgroundColor: "#09090b",
-  glowColor: "0 0 100",
-  colors: ["#ffffff", "#e4e4e7", "#a1a1aa"],
+const OVERVIEW_GLOW = {
+  backgroundColor: "#121421",
+  glowColor: "215 71 34",
+  colors: ["#194793", "#727578", "#121421"],
   borderRadius: 24,
 };
 
@@ -117,15 +117,15 @@ export default function Header({ onMenuClick }: HeaderProps) {
   return (
     <>
       <header className="sticky top-0 z-40 w-full pt-3 px-4 sm:px-6 mb-4" suppressHydrationWarning>
-        <BorderGlow {...MONO_GLOW} className="w-full">
-          <div className="h-16 flex items-center justify-between px-2 sm:px-6 w-full gap-1.5 sm:gap-2" suppressHydrationWarning>
+        <BorderGlow {...OVERVIEW_GLOW} className="w-full">
+          <div className="h-16 flex items-center justify-between px-2 sm:px-6 w-full gap-1.5 sm:gap-2 bg-gradient-to-r from-[#727578]/15 via-[#121421] to-[#121421] rounded-[24px] border border-[#727578]/30" suppressHydrationWarning>
             
             {/* Left: Mobile Menu Button & Glowing Patient Info */}
             <div className="flex items-center gap-1.5 sm:gap-2 flex-1 min-w-0" suppressHydrationWarning>
               {onMenuClick && (
                 <button
                   onClick={onMenuClick}
-                  className="p-1.5 rounded-2xl bg-zinc-900 border border-zinc-800 text-white lg:hidden hover:border-white transition-all shrink-0"
+                  className="p-1.5 rounded-2xl bg-[#121421] border border-[#727578]/40 text-[#194793] lg:hidden hover:border-[#194793] transition-all shrink-0"
                   title="Open Navigation"
                 >
                   <Menu className="w-5 h-5" />
@@ -134,21 +134,21 @@ export default function Header({ onMenuClick }: HeaderProps) {
 
               {profile?.name && (
                 <div className="flex items-center gap-1 sm:gap-3 flex-1 min-w-0" suppressHydrationWarning>
-                  <span className="text-xs font-semibold text-zinc-400 hidden lg:inline shrink-0">Active Patient:</span>
-                  <span className="text-xs sm:text-sm font-extrabold text-white truncate max-w-[60px] min-[380px]:max-w-[100px] sm:max-w-none">{profile.name}</span>
+                  <span className="text-xs font-semibold text-[#727578] hidden lg:inline shrink-0">Active Patient:</span>
+                  <span className="text-xs sm:text-sm font-extrabold text-[#194793] [text-shadow:1px_1px_0px_#121421] truncate max-w-[60px] min-[380px]:max-w-[100px] sm:max-w-none">{profile.name}</span>
                   
                   {/* Glowing Weight & Height Badges - Hidden on mobile to prevent overflow */}
                   <div className="hidden md:flex items-center gap-1.5 shrink-0 ml-1" suppressHydrationWarning>
-                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-zinc-900 text-white border border-zinc-700 text-xs font-extrabold shadow-[0_0_12px_rgba(255,255,255,0.15)] hover:border-white transition-all">
-                      <Calendar className="w-3 h-3 text-zinc-400" />
+                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#121421] text-zinc-200 border border-[#727578]/40 text-xs font-extrabold shadow-sm">
+                      <Calendar className="w-3 h-3 text-[#194793]" />
                       {profile.age} yrs
                     </span>
-                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white text-black border border-white text-xs font-black shadow-[0_0_15px_rgba(255,255,255,0.4)] hover:scale-105 transition-all">
-                      <Scale className="w-3 h-3 text-black" />
+                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#194793] text-white border border-[#194793] text-xs font-black shadow-md hover:scale-105 transition-all">
+                      <Scale className="w-3 h-3 text-white" />
                       {profile.weight} kg
                     </span>
-                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white text-black border border-white text-xs font-black shadow-[0_0_15px_rgba(255,255,255,0.4)] hover:scale-105 transition-all">
-                      <Ruler className="w-3 h-3 text-black" />
+                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#194793] text-white border border-[#194793] text-xs font-black shadow-md hover:scale-105 transition-all">
+                      <Ruler className="w-3 h-3 text-white" />
                       {profile.height || 175} cm
                     </span>
                   </div>
@@ -161,8 +161,8 @@ export default function Header({ onMenuClick }: HeaderProps) {
               
               {/* Daily Date & Day */}
               {currentDate && (
-                <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-zinc-900/50 border border-zinc-800/50 shadow-inner mr-1">
-                  <Calendar className="w-3.5 h-3.5 text-zinc-400" />
+                <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#121421] border border-[#727578]/30 shadow-inner mr-1">
+                  <Calendar className="w-3.5 h-3.5 text-[#194793]" />
                   <span className="text-xs font-bold text-zinc-300 tracking-wide">{currentDate}</span>
                 </div>
               )}
@@ -172,24 +172,24 @@ export default function Header({ onMenuClick }: HeaderProps) {
                 <button
                   onClick={() => setIsNotifOpen(!isNotifOpen)}
                   title="Notifications"
-                  className="p-2 sm:p-2.5 rounded-full bg-zinc-900 hover:bg-white hover:text-black border border-zinc-800 text-zinc-200 transition-all relative"
+                  className="p-2 sm:p-2.5 rounded-full bg-[#121421] hover:bg-[#194793] hover:text-white border border-[#727578]/40 text-[#194793] transition-all relative"
                 >
                   <Bell className="w-4 h-4" />
                   {notifications.length > 0 && (
                     <>
-                      <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-white animate-ping" />
-                      <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-white shadow-[0_0_10px_rgba(255,255,255,0.8)]" />
+                      <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#194793] animate-ping" />
+                      <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#194793]" />
                     </>
                   )}
                 </button>
 
                 {/* Notification Popover Drawer */}
                 {isNotifOpen && (
-                  <div className="absolute right-0 top-12 w-72 sm:w-96 bg-zinc-950/95 backdrop-blur-2xl border border-zinc-800 rounded-3xl p-4 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-                    <div className="flex items-center justify-between pb-3 border-b border-zinc-800 mb-3">
+                  <div className="absolute right-0 top-12 w-72 sm:w-96 bg-[#121421]/95 backdrop-blur-2xl border border-[#727578]/40 rounded-3xl p-4 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                    <div className="flex items-center justify-between pb-3 border-b border-[#727578]/30 mb-3">
                       <div className="flex items-center gap-2">
-                        <Bell className="w-4 h-4 text-white" />
-                        <h4 className="text-sm font-heading font-extrabold text-white">Health Notifications</h4>
+                        <Bell className="w-4 h-4 text-[#194793]" />
+                        <h4 className="text-sm font-heading font-extrabold text-[#194793]">Health Notifications</h4>
                       </div>
                       <button onClick={() => setIsNotifOpen(false)} className="p-1 text-zinc-400 hover:text-white">
                         <X className="w-4 h-4" />
@@ -198,23 +198,20 @@ export default function Header({ onMenuClick }: HeaderProps) {
 
                     <div className="space-y-2.5 max-h-80 overflow-y-auto pr-1">
                       {notifications.length === 0 ? (
-                        <p className="text-xs text-zinc-500 text-center py-6">No new notifications</p>
+                        <p className="text-xs text-zinc-500 text-center py-4">No notifications</p>
                       ) : (
                         notifications.map((n) => {
-                          const Icon = n.icon;
+                          const IconComp = n.icon;
                           return (
-                            <div key={n.id} className="flex items-start gap-3 p-3.5 rounded-2xl bg-zinc-900 border border-zinc-800 relative group">
-                              <div className={`w-8 h-8 rounded-xl ${n.color} flex items-center justify-center shrink-0`}>
-                                <Icon className="w-4 h-4" />
+                            <div key={n.id} className="p-3 rounded-2xl bg-[#727578]/10 border border-[#727578]/30 flex items-start gap-3 relative group">
+                              <div className="w-8 h-8 rounded-xl bg-[#194793] text-white flex items-center justify-center shrink-0 mt-0.5">
+                                <IconComp className="w-4 h-4" />
                               </div>
-                              <div className="flex-1 pr-4">
-                                <h5 className="text-xs font-bold text-white">{n.title}</h5>
-                                <p className="text-[11px] text-zinc-400 mt-0.5 leading-snug">{n.desc}</p>
+                              <div className="flex-1 min-w-0">
+                                <h5 className="text-xs font-bold text-[#194793]">{n.title}</h5>
+                                <p className="text-[11px] text-zinc-300 mt-0.5 leading-snug">{n.desc}</p>
                               </div>
-                              <button
-                                onClick={() => dismissNotif(n.id)}
-                                className="opacity-0 group-hover:opacity-100 transition-opacity p-1 text-zinc-400 hover:text-white absolute top-2.5 right-2.5"
-                              >
+                              <button onClick={() => dismissNotif(n.id)} className="text-zinc-500 hover:text-zinc-300 p-1">
                                 <X className="w-3.5 h-3.5" />
                               </button>
                             </div>
@@ -226,18 +223,16 @@ export default function Header({ onMenuClick }: HeaderProps) {
                 )}
               </div>
 
-              {/* Profile Avatar & Edit Button */}
+              {/* Edit Profile Button */}
               <button
                 onClick={() => setIsModalOpen(true)}
-                title="Edit Profile"
-                className="flex items-center gap-2 p-1 sm:px-3 sm:py-1.5 rounded-full bg-zinc-900 border border-zinc-800 hover:border-zinc-600 transition-all text-xs font-bold text-white shadow-md shrink-0"
+                title="Edit Health Profile"
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#194793] border border-[#194793] text-white flex items-center justify-center font-heading font-black text-sm shadow-md hover:scale-105 transition-all relative shrink-0"
               >
-                <div className="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center font-extrabold text-xs shadow-[0_0_15px_rgba(255,255,255,0.3)] relative shrink-0" suppressHydrationWarning>
-                  {initial}
-                  <Settings className="w-3 h-3 absolute -bottom-0.5 -right-0.5 bg-zinc-900 text-white rounded-full p-0.5 sm:hidden border border-zinc-700" />
+                {initial}
+                <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-[#121421] border border-[#727578]/40 flex items-center justify-center" suppressHydrationWarning>
+                  <Settings className="w-2.5 h-2.5 text-white" />
                 </div>
-                <span className="hidden sm:inline text-white font-extrabold truncate max-w-[80px] md:max-w-none">{profile?.name || "Edit Profile"}</span>
-                <Settings className="w-3.5 h-3.5 text-zinc-400 hidden sm:inline shrink-0" />
               </button>
             </div>
           </div>

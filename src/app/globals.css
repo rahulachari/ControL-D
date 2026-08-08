@@ -46,117 +46,68 @@
 }
 
 :root, .dark {
-  --bg-page: #f0f0f3;
-  --background: hsl(240, 16%, 95%);
-  --foreground: hsl(0, 0%, 12%);
-  --card: hsl(0, 0%, 100%);
-  --card-foreground: hsl(0, 0%, 12%);
-  --popover: hsl(0, 0%, 100%);
-  --popover-foreground: hsl(0, 0%, 12%);
-  --primary: hsl(217, 89%, 61%);
+  --bg-page: #121421;
+  --background: #121421;
+  --foreground: hsl(0, 0%, 100%);
+  --card: #121421;
+  --card-foreground: hsl(0, 0%, 100%);
+  --popover: #121421;
+  --popover-foreground: hsl(0, 0%, 100%);
+  --primary: #194793;
   --primary-foreground: hsl(0, 0%, 100%);
-  --secondary: hsl(210, 40%, 96%);
-  --secondary-foreground: hsl(0, 0%, 12%);
-  --muted: hsl(210, 40%, 96%);
-  --muted-foreground: hsl(215, 16%, 47%);
-  --accent: hsl(210, 40%, 96%);
-  --accent-foreground: hsl(0, 0%, 12%);
+  --secondary: #727578;
+  --secondary-foreground: hsl(0, 0%, 100%);
+  --muted: #727578;
+  --muted-foreground: hsl(215, 16%, 65%);
+  --accent: #194793;
+  --accent-foreground: hsl(0, 0%, 100%);
   --destructive: hsl(0, 84%, 60%);
-  --border: hsl(0, 0%, 90%);
-  --input: hsl(0, 0%, 90%);
-  --ring: hsl(217, 89%, 61%);
-  --chart-1: hsl(217, 89%, 61%);
-  --chart-2: hsl(34, 97%, 50%);
+  --border: rgba(114, 117, 120, 0.4);
+  --input: rgba(114, 117, 120, 0.4);
+  --ring: #194793;
+  --chart-1: #194793;
+  --chart-2: #727578;
   --chart-3: hsl(141, 53%, 43%);
   --chart-4: hsl(4, 82%, 59%);
   --chart-5: hsl(262, 71%, 63%);
   --radius: 16px;
   
-  --sidebar: hsl(0, 0%, 100%);
-  --sidebar-foreground: hsl(0, 0%, 12%);
-  --sidebar-primary: hsl(217, 89%, 61%);
+  --sidebar: #121421;
+  --sidebar-foreground: hsl(0, 0%, 100%);
+  --sidebar-primary: #194793;
   --sidebar-primary-foreground: hsl(0, 0%, 100%);
-  --sidebar-accent: hsl(210, 40%, 96%);
-  --sidebar-accent-foreground: hsl(0, 0%, 12%);
-  --sidebar-border: hsl(0, 0%, 90%);
-  --sidebar-ring: hsl(217, 89%, 61%);
+  --sidebar-accent: #727578;
+  --sidebar-accent-foreground: hsl(0, 0%, 100%);
+  --sidebar-border: rgba(114, 117, 120, 0.4);
+  --sidebar-ring: #194793;
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    border-color: var(--border);
   }
   body {
-    @apply bg-background text-foreground font-sans;
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
   }
   h1, h2, h3, h4, h5, h6 {
-    @apply font-heading;
+    font-family: var(--font-heading);
   }
 }
 
-/* Animations */
-@keyframes lm-ripple-anim {
-  0% {
-    transform: translate(-50%, -50%) scale(0);
-    opacity: 0.6;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(4);
-    opacity: 0;
-  }
+/* Custom 3D Royal Blue Heading & Cool Gray Card Utilities */
+.text-royal-3d {
+  color: #194793;
+  text-shadow: 1.5px 1.5px 0px #121421;
 }
 
-@keyframes wave-shift {
-  0% { transform: translateX(0px); }
-  100% { transform: translateX(-100px); }
+.bg-cool-card {
+  background: linear-gradient(135deg, rgba(114, 117, 120, 0.15) 0%, rgba(18, 20, 33, 0.9) 100%);
+  border: 1px solid rgba(114, 117, 120, 0.35);
+  box-shadow: 0 10px 30px rgba(18, 20, 33, 0.5);
 }
 
-.animate-wave {
-  animation: wave-shift 3s linear infinite;
-}
-
-.animate-wave-slow {
-  animation: wave-shift 5s linear infinite;
-}
-
-.mesh-gradient-bg {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background-color: #f0f0f3;
-  background-image: 
-    radial-gradient(at 80% 0%, hsla(217,89%,61%,0.15) 0px, transparent 50%),
-    radial-gradient(at 0% 50%, hsla(262,71%,63%,0.15) 0px, transparent 50%),
-    radial-gradient(at 80% 100%, hsla(141,53%,43%,0.15) 0px, transparent 50%),
-    radial-gradient(at 0% 0%, hsla(34,97%,50%,0.15) 0px, transparent 50%);
-  filter: blur(40px);
-}
-
-.edge-glow {
-  position: fixed;
-  top: 0;
-  width: 140px;
-  height: 100%;
-  pointer-events: none;
-  z-index: 0;
-}
-.edge-glow-left {
-  left: 0;
-  background: linear-gradient(90deg, rgba(66, 133, 244, 0.08), transparent);
-}
-.edge-glow-right {
-  right: 0;
-  background: linear-gradient(270deg, rgba(66, 133, 244, 0.08), transparent);
-}
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-  html {
-    @apply font-sans;
-  }
+.border-cool-gray {
+  border-color: rgba(114, 117, 120, 0.4);
 }

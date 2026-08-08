@@ -23,37 +23,37 @@ export default function EmergencyPage() {
   const toggle = (s: string) => setExpandedSection(expandedSection === s ? null : s);
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 pb-12">
+    <div className="max-w-4xl mx-auto space-y-6 pb-28 sm:pb-12">
       <div>
-        <h1 className="text-3xl font-heading font-bold text-rose-500 tracking-tight flex items-center gap-2">
-          <Siren className="w-7 h-7" /> Emergency Mode
+        <h1 className="text-3xl font-heading font-black text-[#194793] tracking-tight [text-shadow:2px_2px_0px_#121421] flex items-center gap-2">
+          <Siren className="w-7 h-7 text-[#194793]" /> Emergency Mode
         </h1>
-        <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Quick access to emergency contacts, guides, and location sharing.</p>
+        <p className="text-zinc-300 text-sm mt-1">Quick access to emergency contacts, guides, and location sharing.</p>
       </div>
 
       {/* Emergency Actions */}
       <div className="grid md:grid-cols-3 gap-4">
-        <a href="tel:108" className="bg-rose-500 text-white rounded-3xl p-6 text-center shadow-xl shadow-rose-500/20 hover:shadow-2xl transition-all">
+        <a href="tel:108" className="bg-rose-500 text-white rounded-3xl p-6 text-center shadow-xl shadow-[#121421] hover:scale-105 transition-all border border-rose-400/40">
           <Siren className="w-10 h-10 mx-auto mb-3" />
-          <span className="text-lg font-heading font-bold block">Call 108</span>
-          <span className="text-xs opacity-80">Emergency Ambulance</span>
+          <span className="text-lg font-heading font-black block [text-shadow:1px_1px_0px_#121421]">Call 108</span>
+          <span className="text-xs opacity-90">Emergency Ambulance</span>
         </a>
 
-        <a href="tel:112" className="bg-amber-500 text-white rounded-3xl p-6 text-center shadow-xl shadow-amber-500/20 hover:shadow-2xl transition-all">
+        <a href="tel:112" className="bg-amber-500 text-white rounded-3xl p-6 text-center shadow-xl shadow-[#121421] hover:scale-105 transition-all border border-amber-400/40">
           <Phone className="w-10 h-10 mx-auto mb-3" />
-          <span className="text-lg font-heading font-bold block">Call 112</span>
-          <span className="text-xs opacity-80">Emergency Helpline</span>
+          <span className="text-lg font-heading font-black block [text-shadow:1px_1px_0px_#121421]">Call 112</span>
+          <span className="text-xs opacity-90">Emergency Helpline</span>
         </a>
 
-        <button onClick={shareLocation} className={`rounded-3xl p-6 text-center shadow-xl transition-all ${locationShared ? "bg-emerald-500 text-white" : "bg-blue-500 text-white shadow-blue-500/20 hover:shadow-2xl"}`}>
-          <MapPin className="w-10 h-10 mx-auto mb-3" />
-          <span className="text-lg font-heading font-bold block">{locationShared ? "Location Copied!" : "Share Location"}</span>
-          <span className="text-xs opacity-80">{locationShared ? "Link copied to clipboard" : "Copy Google Maps link"}</span>
+        <button onClick={shareLocation} className={`rounded-3xl p-6 text-center shadow-xl transition-all hover:scale-105 border ${locationShared ? "bg-[#194793] text-white border-[#194793]" : "bg-[#121421] text-[#194793] border-[#727578]/40"}`}>
+          <MapPin className="w-10 h-10 mx-auto mb-3 text-[#194793]" />
+          <span className="text-lg font-heading font-black block [text-shadow:1px_1px_0px_#121421]">{locationShared ? "Location Copied!" : "Share Location"}</span>
+          <span className="text-xs text-zinc-300">{locationShared ? "Link copied to clipboard" : "Copy Google Maps link"}</span>
         </button>
       </div>
 
       {/* Hypoglycemia Guide */}
-      <div className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border border-white/20 dark:border-slate-800 rounded-3xl shadow-xl overflow-hidden">
+      <div className="bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] backdrop-blur-xl border border-[#727578]/30 rounded-3xl shadow-xl overflow-hidden">
         <button onClick={() => toggle("hypo")} className="w-full flex items-center justify-between p-6 text-left">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center">

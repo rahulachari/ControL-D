@@ -21,10 +21,10 @@ import {
   type UserProfile, type DayData
 } from "@/lib/healthStore";
 
-const MONO_GLOW = {
-  backgroundColor: "#09090b",
-  glowColor: "0 0 100",
-  colors: ["#ffffff", "#e4e4e7", "#a1a1aa"],
+const OVERVIEW_GLOW = {
+  backgroundColor: "#121421",
+  glowColor: "215 71 34",
+  colors: ["#194793", "#727578", "#121421"],
   borderRadius: 24,
 };
 
@@ -67,12 +67,12 @@ export default function SmartDashboard() {
 
   if (isAuthenticated === null || showSplash) {
     return (
-      <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black" suppressHydrationWarning>
-        <div className="flex flex-col items-center gap-5 animate-in fade-in zoom-in duration-700">
-          <div className="w-24 h-24 bg-white rounded-[2rem] flex items-center justify-center shadow-[0_0_50px_rgba(255,255,255,0.2)]">
-            <Activity className="w-12 h-12 text-black" />
+      <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#121421]" suppressHydrationWarning>
+        <div className="flex flex-col items-center gap-5 animate-in fade-in zoom-in duration-700" suppressHydrationWarning>
+          <div className="w-24 h-24 rounded-[2rem] overflow-hidden flex items-center justify-center shadow-[0_0_50px_rgba(25,71,147,0.5)] border border-[#727578]/50" suppressHydrationWarning>
+            <img src="/logo.png" alt="ControL-D Logo" className="w-full h-full object-cover" />
           </div>
-          <h1 className="text-3xl font-heading font-black text-white tracking-widest uppercase">ControL-D</h1>
+          <h1 className="text-3xl font-heading font-black bg-gradient-to-r from-[#e8e8e8] via-[#b0b0b0] to-[#8a8a8a] bg-clip-text text-transparent tracking-widest uppercase">ControL-D</h1>
         </div>
       </div>
     );
@@ -99,28 +99,28 @@ export default function SmartDashboard() {
     <div className="max-w-7xl mx-auto space-y-8 pb-16">
 
       {/* ===== HERO / GREETING ===== */}
-      <BorderGlow {...MONO_GLOW} className="w-full">
-        <section className="relative overflow-hidden p-8 md:p-10">
+      <BorderGlow {...OVERVIEW_GLOW} className="w-full">
+        <section className="relative overflow-hidden p-8 md:p-10 bg-gradient-to-br from-[#727578]/20 via-[#121421]/90 to-[#121421] rounded-[24px] border border-[#727578]/30 shadow-xl">
           <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div className="space-y-3 max-w-2xl">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-zinc-900 text-white text-xs font-bold border border-zinc-800">
-                <Sparkles className="w-3.5 h-3.5 animate-pulse text-white" /> AI-Powered Clinical Companion
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#121421] text-[#194793] text-xs font-black border border-[#727578]/40 shadow-sm">
+                <Sparkles className="w-3.5 h-3.5 animate-pulse text-[#194793]" /> AI-Powered Clinical Companion
               </div>
-              <h1 className="text-3xl md:text-4xl font-heading font-extrabold text-white tracking-tight leading-tight">
+              <h1 className="text-3xl md:text-4xl font-heading font-black text-[#194793] tracking-tight leading-tight [text-shadow:2px_2px_0px_#121421]">
                 {greeting},{" "}
-                <span className="text-white underline decoration-zinc-600 underline-offset-8">
+                <span className="text-[#194793] underline decoration-[#727578] underline-offset-8">
                   {profile?.name || "Patient"}
                 </span>! 👋
               </h1>
-              <p className="text-zinc-400 text-sm leading-relaxed max-w-lg font-medium">
+              <p className="text-zinc-300 text-sm leading-relaxed max-w-lg font-medium">
                 {motivation}
               </p>
             </div>
-            <div className="flex gap-3">
-              <Link href="/glucose" className="px-6 py-3.5 rounded-full bg-white text-black font-extrabold shadow-lg shadow-white/20 text-sm flex items-center gap-2 hover:scale-105 transition-all">
+            <div className="flex flex-col sm:flex-row gap-3 mt-2 sm:mt-0 w-full sm:w-auto">
+              <Link href="/glucose" className="w-full sm:w-auto justify-center px-4 sm:px-6 py-3.5 rounded-full bg-[#194793] hover:bg-[#194793]/90 text-white font-black shadow-lg shadow-[#121421] text-sm flex items-center gap-2 hover:scale-105 transition-all border border-[#727578]/40">
                 Log Sugar <ArrowRight className="w-4 h-4" />
               </Link>
-              <button onClick={() => setIsOnboardingOpen(true)} className="px-6 py-3.5 rounded-full bg-zinc-900 border border-zinc-800 text-white font-bold text-sm hover:border-zinc-600 transition-all">
+              <button onClick={() => setIsOnboardingOpen(true)} className="w-full sm:w-auto justify-center px-4 sm:px-6 py-3.5 rounded-full bg-[#121421] border border-[#727578]/50 text-zinc-200 font-bold text-sm hover:border-[#194793] hover:text-[#194793] transition-all">
                 Edit Profile
               </button>
             </div>
@@ -135,19 +135,19 @@ export default function SmartDashboard() {
         <HealthScoreCard />
 
         {/* Sugar Status */}
-        <BorderGlow {...MONO_GLOW} className="w-full h-full">
-          <div className="p-5 flex flex-col justify-between h-full">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-[10px] font-extrabold uppercase tracking-widest text-zinc-400">Sugar Status</span>
-              <Activity className="w-4 h-4 text-white" />
+        <BorderGlow {...OVERVIEW_GLOW} className="w-full h-full">
+          <div className="p-5 flex flex-col justify-between h-full bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] rounded-[24px] border border-[#727578]/30">
+            <div className="flex items-center justify-between mb-3 gap-1">
+              <span className="text-[9px] min-[360px]:text-[10px] font-black uppercase tracking-widest text-[#194793] truncate">Sugar Status</span>
+              <Activity className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#194793] shrink-0" />
             </div>
             {lastSugar ? (
               <div>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-3xl font-heading font-extrabold text-white">{lastSugar.value}</span>
+                  <span className="text-3xl font-heading font-black text-[#194793] [text-shadow:1.5px_1.5px_0px_#121421]">{lastSugar.value}</span>
                   <span className="text-xs font-bold text-zinc-400">mg/dL</span>
                 </div>
-                <div className="flex items-center gap-1.5 mt-1.5 text-xs font-extrabold text-white">
+                <div className="flex items-center gap-1.5 mt-1.5 text-xs font-extrabold text-zinc-200">
                   {sugarStatus?.emoji} {sugarStatus?.label}
                   <span className="text-zinc-400 font-semibold text-[10px] ml-1">• {lastSugar.context.replace(/_/g, " ")}</span>
                 </div>
@@ -159,57 +159,57 @@ export default function SmartDashboard() {
         </BorderGlow>
 
         {/* Water Progress */}
-        <BorderGlow {...MONO_GLOW} className="w-full h-full">
-          <div className="p-5 flex flex-col justify-between h-full">
+        <BorderGlow {...OVERVIEW_GLOW} className="w-full h-full">
+          <div className="p-5 flex flex-col justify-between h-full bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] rounded-[24px] border border-[#727578]/30">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-[10px] font-extrabold uppercase tracking-widest text-zinc-400">Hydration</span>
-              <Droplet className="w-4 h-4 text-white" />
+              <span className="text-[10px] font-black uppercase tracking-widest text-[#194793]">Hydration</span>
+              <Droplet className="w-4 h-4 text-[#194793]" />
             </div>
             <div>
-              <div className="text-2xl font-heading font-extrabold text-white">
+              <div className="text-2xl font-heading font-black text-[#194793] [text-shadow:1px_1px_0px_#121421]">
                 {(totalWater / 1000).toFixed(1)}L <span className="text-xs font-normal text-zinc-400">/ {(waterTarget / 1000).toFixed(1)}L</span>
               </div>
-              <div className="h-2 rounded-full bg-zinc-900 mt-2 overflow-hidden border border-zinc-800">
-                <div className="h-full rounded-full bg-white transition-all duration-700 shadow-md shadow-white/30" style={{ width: `${waterPct}%` }} />
+              <div className="h-2 rounded-full bg-[#121421] mt-2 overflow-hidden border border-[#727578]/40">
+                <div className="h-full rounded-full bg-[#194793] transition-all duration-700 shadow-md shadow-[#194793]/40" style={{ width: `${waterPct}%` }} />
               </div>
             </div>
           </div>
         </BorderGlow>
 
         {/* Calories */}
-        <BorderGlow {...MONO_GLOW} className="w-full h-full">
-          <div className="p-5 flex flex-col justify-between h-full">
+        <BorderGlow {...OVERVIEW_GLOW} className="w-full h-full">
+          <div className="p-5 flex flex-col justify-between h-full bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] rounded-[24px] border border-[#727578]/30">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-[10px] font-extrabold uppercase tracking-widest text-zinc-400">Calories</span>
-              <Flame className="w-4 h-4 text-white" />
+              <span className="text-[10px] font-black uppercase tracking-widest text-[#194793]">Calories</span>
+              <Flame className="w-4 h-4 text-[#194793]" />
             </div>
             <div>
-              <div className="text-2xl font-heading font-extrabold text-white">
+              <div className="text-2xl font-heading font-black text-[#194793] [text-shadow:1px_1px_0px_#121421]">
                 {totalCal} <span className="text-xs font-normal text-zinc-400">/ {calTarget} kcal</span>
               </div>
-              <div className="h-2 rounded-full bg-zinc-900 mt-2 overflow-hidden border border-zinc-800">
-                <div className="h-full rounded-full bg-zinc-300 transition-all duration-700" style={{ width: `${Math.min(Math.round((totalCal / calTarget) * 100), 100)}%` }} />
+              <div className="h-2 rounded-full bg-[#121421] mt-2 overflow-hidden border border-[#727578]/40">
+                <div className="h-full rounded-full bg-[#194793] transition-all duration-700" style={{ width: `${Math.min(Math.round((totalCal / calTarget) * 100), 100)}%` }} />
               </div>
             </div>
           </div>
         </BorderGlow>
 
         {/* Exercise & Sleep Mini */}
-        <BorderGlow {...MONO_GLOW} className="w-full h-full">
-          <div className="p-5 space-y-4 h-full flex flex-col justify-between">
+        <BorderGlow {...OVERVIEW_GLOW} className="w-full h-full">
+          <div className="p-5 space-y-4 h-full flex flex-col justify-between bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] rounded-[24px] border border-[#727578]/30">
             <div>
               <div className="flex items-center justify-between mb-1">
-                <span className="text-[10px] font-extrabold uppercase tracking-widest text-zinc-400">Exercise</span>
-                <Dumbbell className="w-4 h-4 text-white" />
+                <span className="text-[10px] font-black uppercase tracking-widest text-[#194793]">Exercise</span>
+                <Dumbbell className="w-4 h-4 text-[#194793]" />
               </div>
-              <span className="text-xl font-heading font-extrabold text-white">{exerciseMin} <span className="text-xs font-normal text-zinc-400">min</span></span>
+              <span className="text-xl font-heading font-black text-[#194793] [text-shadow:1px_1px_0px_#121421]">{exerciseMin} <span className="text-xs font-normal text-zinc-400">min</span></span>
             </div>
-            <div className="border-t border-zinc-800 pt-3">
+            <div className="border-t border-[#727578]/30 pt-3">
               <div className="flex items-center justify-between mb-1">
-                <span className="text-[10px] font-extrabold uppercase tracking-widest text-zinc-400">Sleep</span>
-                <Moon className="w-4 h-4 text-white" />
+                <span className="text-[10px] font-black uppercase tracking-widest text-[#194793]">Sleep</span>
+                <Moon className="w-4 h-4 text-[#194793]" />
               </div>
-              <span className="text-xl font-heading font-extrabold text-white">
+              <span className="text-xl font-heading font-black text-[#194793] [text-shadow:1px_1px_0px_#121421]">
                 {sleepHrs != null ? `${sleepHrs}h` : "—"} <span className="text-xs font-normal text-zinc-400">{sleepHrs != null && sleepHrs >= 7 ? "Good" : "Log it"}</span>
               </span>
             </div>
@@ -218,13 +218,13 @@ export default function SmartDashboard() {
       </section>
 
       {/* ===== AI HEALTH TIP ===== */}
-      <BorderGlow {...MONO_GLOW} className="w-full">
-        <section className="p-5 flex items-start gap-4">
-          <div className="w-10 h-10 rounded-2xl bg-white text-black flex items-center justify-center shrink-0 font-bold">
+      <BorderGlow {...OVERVIEW_GLOW} className="w-full">
+        <section className="p-5 flex items-start gap-4 bg-gradient-to-r from-[#727578]/20 via-[#121421] to-[#121421] rounded-[24px] border border-[#727578]/40">
+          <div className="w-10 h-10 rounded-2xl bg-[#194793] text-white flex items-center justify-center shrink-0 font-black shadow-md shadow-[#121421]">
             <Brain className="w-5 h-5" />
           </div>
           <div>
-            <span className="text-xs font-extrabold text-white uppercase tracking-wider">AI Clinical Insight</span>
+            <span className="text-xs font-black text-[#194793] uppercase tracking-wider">AI Clinical Insight</span>
             <p className="text-sm text-zinc-200 mt-1 font-medium leading-relaxed">{aiTip}</p>
           </div>
         </section>
@@ -238,7 +238,7 @@ export default function SmartDashboard() {
 
       {/* ===== QUICK NAV MODULES ===== */}
       <section>
-        <h2 className="text-xl font-heading font-extrabold text-white mb-4">Health Modules</h2>
+        <h2 className="text-xl font-heading font-black text-[#194793] mb-4 [text-shadow:1.5px_1.5px_0px_#121421]">Health Modules</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {[
             { href: "/glucose", label: "Glucose", icon: Activity },
@@ -248,15 +248,15 @@ export default function SmartDashboard() {
             { href: "/meds", label: "Medication", icon: Pill },
             { href: "/sleep", label: "Sleep", icon: Moon },
           ].map(({ href, label, icon: Icon }) => (
-            <BorderGlow key={href} {...MONO_GLOW} className="w-full">
+            <BorderGlow key={href} {...OVERVIEW_GLOW} className="w-full">
               <Link
                 href={href}
-                className="group p-5 flex flex-col items-center text-center hover:scale-105 transition-all duration-300 w-full"
+                className="group p-5 flex flex-col items-center text-center hover:scale-105 transition-all duration-300 w-full bg-gradient-to-b from-[#727578]/15 to-[#121421] rounded-[24px] border border-[#727578]/30 hover:border-[#194793]"
               >
-                <div className="w-12 h-12 rounded-2xl bg-zinc-900 border border-zinc-800 text-white flex items-center justify-center mb-3 group-hover:bg-white group-hover:text-black transition-all">
+                <div className="w-12 h-12 rounded-2xl bg-[#121421] border border-[#727578]/40 text-[#194793] flex items-center justify-center mb-3 group-hover:bg-[#194793] group-hover:text-white transition-all shadow-md">
                   <Icon className="w-6 h-6" />
                 </div>
-                <span className="text-sm font-heading font-extrabold text-white">{label}</span>
+                <span className="text-sm font-heading font-black text-[#194793] group-hover:text-white transition-colors">{label}</span>
               </Link>
             </BorderGlow>
           ))}

@@ -1,15 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import LiquidMetalButton from "@/components/ui/LiquidMetalButton";
 import BorderGlow from "@/components/ui/BorderGlow";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { Lock, Mail, Sparkles, Eye, EyeOff } from "lucide-react";
 
-const MONO_GLOW = {
-  backgroundColor: "#09090b",
-  glowColor: "0 0 100",
-  colors: ["#ffffff", "#e4e4e7", "#a1a1aa"],
+const OVERVIEW_GLOW = {
+  backgroundColor: "#121421",
+  glowColor: "215 71 34",
+  colors: ["#194793", "#727578", "#121421"],
   borderRadius: 28,
 };
 
@@ -109,21 +108,21 @@ export default function LoginPage() {
   return (
     <div className="flex-1 flex items-center justify-center -mt-6 min-h-[80vh] p-4" suppressHydrationWarning>
       <div className="w-full max-w-md" suppressHydrationWarning>
-        <BorderGlow {...MONO_GLOW} className="w-full">
-          <div className="p-8 sm:p-10" suppressHydrationWarning>
+        <BorderGlow {...OVERVIEW_GLOW} className="w-full">
+          <div className="p-8 sm:p-10 bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] rounded-[28px] border border-[#727578]/30 shadow-2xl" suppressHydrationWarning>
             
             {/* Header Logo & Title */}
             <div className="text-center mb-8" suppressHydrationWarning>
-              <div className="w-16 h-16 rounded-3xl overflow-hidden mx-auto mb-4 border border-zinc-800 shadow-xl" suppressHydrationWarning>
+              <div className="w-16 h-16 rounded-3xl overflow-hidden mx-auto mb-4 border border-[#727578]/40 shadow-xl" suppressHydrationWarning>
                 <img src="/logo.png" alt="ControL-D Logo" className="w-full h-full object-cover" />
               </div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 text-xs font-semibold mb-3" suppressHydrationWarning>
-                <Sparkles className="w-3.5 h-3.5 text-blue-400" /> AI Health Companion
+              <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#121421] border border-[#727578]/40 text-[#194793] text-xs font-bold mb-3" suppressHydrationWarning>
+                <Sparkles className="w-3.5 h-3.5 text-[#194793]" /> AI Health Companion
               </div>
-              <h2 className="text-2xl sm:text-3xl font-heading font-black text-white tracking-tight">
+              <h2 className="text-2xl sm:text-3xl font-heading font-black text-[#194793] tracking-tight [text-shadow:2px_2px_0px_#121421]">
                 {isSignUp ? "Create Your Account" : "Welcome to ControL-D"}
               </h2>
-              <p className="text-xs sm:text-sm text-zinc-400 font-medium mt-1">
+              <p className="text-xs sm:text-sm text-zinc-300 font-medium mt-1">
                 {isSignUp ? "Sign up to track & sync health logs" : "Sign in to access your AI health companion dashboard"}
               </p>
             </div>
@@ -134,7 +133,7 @@ export default function LoginPage() {
                 className={`p-4 rounded-2xl mb-6 text-xs font-bold ${
                   message.type === "error"
                     ? "bg-rose-500/10 text-rose-400 border border-rose-500/20"
-                    : "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                    : "bg-[#194793]/20 text-white border border-[#194793]"
                 }`}
                 suppressHydrationWarning
               >
@@ -145,13 +144,13 @@ export default function LoginPage() {
             {/* ===== EMAIL AUTH FORM ===== */}
             <form onSubmit={handleEmailSubmit} className="space-y-4" suppressHydrationWarning>
               <div className="space-y-1.5" suppressHydrationWarning>
-                <label className="text-xs font-black uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
-                  <Mail className="w-3.5 h-3.5 text-zinc-500" /> Email Address
+                <label className="text-xs font-black uppercase tracking-wider text-[#194793] flex items-center gap-1.5">
+                  <Mail className="w-3.5 h-3.5 text-[#194793]" /> Email Address
                 </label>
                 <input 
                   type="email"
                   required
-                  className="w-full px-4 py-3.5 rounded-2xl bg-zinc-900 border border-zinc-800 focus:border-white outline-none transition-all text-sm font-bold text-white placeholder-zinc-600"
+                  className="w-full px-4 py-3.5 rounded-2xl bg-[#121421] border border-[#727578]/40 focus:border-[#194793] outline-none transition-all text-sm font-bold text-white placeholder-zinc-500"
                   placeholder="name@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -159,15 +158,15 @@ export default function LoginPage() {
               </div>
               
               <div className="space-y-1.5" suppressHydrationWarning>
-                <label className="text-xs font-black uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
-                  <Lock className="w-3.5 h-3.5 text-zinc-500" /> Password
+                <label className="text-xs font-black uppercase tracking-wider text-[#194793] flex items-center gap-1.5">
+                  <Lock className="w-3.5 h-3.5 text-[#194793]" /> Password
                 </label>
                 <div className="relative" suppressHydrationWarning>
                   <input 
                     type={showPassword ? "text" : "password"}
                     required
                     minLength={6}
-                    className="w-full px-4 py-3.5 pr-12 rounded-2xl bg-zinc-900 border border-zinc-800 focus:border-white outline-none transition-all text-sm font-bold text-white placeholder-zinc-600"
+                    className="w-full px-4 py-3.5 pr-12 rounded-2xl bg-[#121421] border border-[#727578]/40 focus:border-[#194793] outline-none transition-all text-sm font-bold text-white placeholder-zinc-500"
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -175,7 +174,7 @@ export default function LoginPage() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white transition-colors p-1"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white transition-colors p-1"
                     title={showPassword ? "Hide password" : "Show password"}
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -187,7 +186,7 @@ export default function LoginPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-4 px-6 rounded-2xl bg-white hover:bg-zinc-200 text-black font-heading font-black text-xs sm:text-sm uppercase tracking-widest transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] shadow-[0_0_25px_rgba(255,255,255,0.2)] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full py-4 px-6 rounded-2xl bg-[#194793] hover:bg-[#194793]/90 text-white font-heading font-black text-xs sm:text-sm uppercase tracking-widest transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] shadow-lg shadow-[#121421] border border-[#727578]/40 disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
                 >
                   {loading ? "Processing..." : isSignUp ? "Create Account" : "Sign In to Dashboard"}
                 </button>
@@ -197,9 +196,9 @@ export default function LoginPage() {
             {/* Divider */}
             <div className="relative my-6 text-center" suppressHydrationWarning>
               <div className="absolute inset-0 flex items-center" suppressHydrationWarning>
-                <div className="w-full border-t border-zinc-800" suppressHydrationWarning />
+                <div className="w-full border-t border-[#727578]/30" suppressHydrationWarning />
               </div>
-              <span className="relative px-3 bg-[#09090b] text-[10px] font-black text-zinc-500 uppercase tracking-widest">
+              <span className="relative px-3 bg-[#121421] text-[10px] font-black text-[#194793] uppercase tracking-widest">
                 Or
               </span>
             </div>
@@ -209,7 +208,7 @@ export default function LoginPage() {
               type="button"
               onClick={handleGoogleSignIn}
               disabled={loading}
-              className="w-full py-3.5 px-4 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-zinc-600 text-white text-xs font-black uppercase tracking-wider flex items-center justify-center gap-3 transition-all hover:scale-[1.02] shadow-md disabled:opacity-50"
+              className="w-full py-3.5 px-4 rounded-2xl bg-[#121421] border border-[#727578]/40 hover:border-[#194793] text-white text-xs font-black uppercase tracking-wider flex items-center justify-center gap-3 transition-all hover:scale-[1.02] shadow-md disabled:opacity-50"
             >
               <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
                 <path
@@ -232,7 +231,7 @@ export default function LoginPage() {
               Sign In with Google
             </button>
 
-            <p className="text-center text-xs font-bold text-zinc-500 mt-8">
+            <p className="text-center text-xs font-bold text-zinc-400 mt-8">
               {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
               <button
                 type="button"
@@ -240,7 +239,7 @@ export default function LoginPage() {
                   setIsSignUp(!isSignUp);
                   setMessage(null);
                 }}
-                className="text-blue-400 hover:text-white underline font-black transition-colors"
+                className="text-[#194793] hover:text-white underline font-black transition-colors"
               >
                 {isSignUp ? "Sign in" : "Sign up"}
               </button>

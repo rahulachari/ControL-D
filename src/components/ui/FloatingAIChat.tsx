@@ -4,6 +4,8 @@ import { useState, useEffect, useRef } from "react";
 import { Bot, Send, X, User, Sparkles, ChevronDown } from "lucide-react";
 import { getProfile, getDayData } from "@/lib/healthStore";
 
+import FormattedMessage from "@/components/ui/FormattedMessage";
+
 interface Message {
   role: "user" | "assistant";
   content: string;
@@ -141,7 +143,11 @@ export default function FloatingAIChat() {
                           : "bg-zinc-900 text-zinc-200 rounded-tl-sm border border-zinc-800 font-medium"
                       }`}
                     >
-                      <p className="whitespace-pre-wrap leading-relaxed">{msg.content}</p>
+                      {msg.role === "user" ? (
+                        <p className="whitespace-pre-wrap leading-relaxed">{msg.content}</p>
+                      ) : (
+                        <FormattedMessage content={msg.content} />
+                      )}
                     </div>
                   </div>
                 ))}

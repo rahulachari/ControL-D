@@ -2,8 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { getDayData, updateGoal, getGoalCompletion, getStreak, DailyGoals as DailyGoalsType } from "@/lib/healthStore";
-import { Droplet, Footprints, Pill, Salad, Activity, Dumbbell, Moon, Target, Flame } from "lucide-react";
+import { Droplet, Footprints, Pill, Salad, Activity, Dumbbell, Moon, Target, Flame, Check } from "lucide-react";
 import BorderGlow from "@/components/ui/BorderGlow";
+
+const OVERVIEW_GLOW = {
+  backgroundColor: "#121421",
+  glowColor: "215 71 34",
+  colors: ["#194793", "#727578", "#121421"],
+  borderRadius: 24,
+};
 
 const GOAL_CONFIG: { key: keyof DailyGoalsType; label: string; icon: React.ElementType }[] = [
   { key: "drinkWater", label: "Drink Water", icon: Droplet },
@@ -38,72 +45,58 @@ export default function DailyGoals() {
   };
 
   return (
-    <BorderGlow
-      borderRadius={24}
-      glowColor="0 0 100"
-      backgroundColor="#09090b"
-      colors={["#ffffff", "#a1a1aa", "#71717a"]}
-      className="w-full"
-    >
-      <div className="p-6">
+    <BorderGlow {...OVERVIEW_GLOW} className="w-full">
+      <div className="p-6 bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] rounded-[24px] border border-[#727578]/30">
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-2xl bg-white text-black flex items-center justify-center font-bold">
+            <div className="w-8 h-8 rounded-2xl bg-[#194793] text-white flex items-center justify-center font-black shadow-md shadow-[#121421]">
               <Target className="w-5 h-5" />
             </div>
-            <h3 className="text-lg font-heading font-extrabold text-white">Daily Goals</h3>
+            <h3 className="text-lg font-heading font-black text-[#194793] [text-shadow:1.5px_1.5px_0px_#121421]">Daily Goals & Habits</h3>
           </div>
           <div className="flex items-center gap-3">
             {streak > 0 && (
-              <span className="flex items-center gap-1 px-3 py-1 rounded-full bg-zinc-900 text-white border border-zinc-800 text-xs font-bold">
-                <Flame className="w-3.5 h-3.5 text-white" /> {streak}-Day Streak
+              <span className="flex items-center gap-1 px-3 py-1 rounded-full bg-[#121421] text-[#194793] border border-[#727578]/40 text-xs font-black">
+                <Flame className="w-3.5 h-3.5 text-[#194793]" /> {streak}-Day Streak
               </span>
             )}
-            <span className="text-xs font-extrabold px-3 py-1 rounded-full bg-white text-black">
-              {completion}%
+            <span className="text-xs font-black px-3 py-1 rounded-full bg-[#194793] text-white shadow-md shadow-[#121421]">
+              {completion}% Done
             </span>
           </div>
         </div>
 
         {/* Progress Bar */}
-        <div className="h-2.5 rounded-full bg-zinc-900 mb-5 overflow-hidden border border-zinc-800">
+        <div className="h-2.5 rounded-full bg-[#121421] mb-6 overflow-hidden border border-[#727578]/40">
           <div
-            className="h-full rounded-full bg-white transition-all duration-700 ease-out shadow-md shadow-white/30"
+            className="h-full rounded-full bg-[#194793] transition-all duration-700 shadow-md shadow-[#194793]/50"
             style={{ width: `${completion}%` }}
           />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-          {GOAL_CONFIG.map(({ key, label, icon: Icon }) => (
-            <button
-              key={key}
-              onClick={() => toggleGoal(key)}
-              className={`flex items-center gap-3 px-4 py-3 rounded-full text-left transition-all duration-200 border ${
-                goals[key]
-                  ? "bg-white border-white text-black shadow-lg shadow-white/20 font-extrabold"
-                  : "bg-zinc-900 border-zinc-800 text-zinc-300 hover:border-zinc-700 hover:bg-zinc-850"
-              }`}
-            >
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
-                goals[key]
-                  ? "bg-black text-white"
-                  : "bg-zinc-800 text-zinc-300"
-              }`}>
-                {goals[key] ? (
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                  </svg>
-                ) : (
-                  <Icon className="w-4 h-4" />
-                )}
-              </div>
-              <span className={`text-sm font-bold ${
-                goals[key] ? "text-black line-through" : "text-zinc-200"
-              }`}>
-                {label}
-              </span>
-            </button>
-          ))}
+        {/* Goals Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
+          {GOAL_CONFIG.map(({ key, label, icon: Icon }) => {
+            const isDone = goals[key];
+            return (
+              <button
+                key={key}
+                onClick={() => toggleGoal(key)}
+                className={`p-3.5 rounded-2xl border transition-all duration-200 flex flex-col items-center text-center gap-2 cursor-pointer ${
+                  isDone
+                    ? "bg-[#194793] border-[#194793] text-white shadow-lg shadow-[#121421] scale-105"
+                    : "bg-[#121421] border-[#727578]/40 text-zinc-300 hover:border-[#194793] hover:text-[#194793]"
+                }`}
+              >
+                <div className={`w-8 h-8 rounded-xl flex items-center justify-center font-bold ${
+                  isDone ? "bg-white text-[#194793]" : "bg-[#727578]/20 text-[#194793]"
+                }`}>
+                  {isDone ? <Check className="w-4 h-4" /> : <Icon className="w-4 h-4" />}
+                </div>
+                <span className="text-xs font-bold leading-tight">{label}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
     </BorderGlow>
