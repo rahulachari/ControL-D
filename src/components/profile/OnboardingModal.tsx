@@ -94,7 +94,7 @@ export default function OnboardingModal({ isOpen, onClose, onSave }: OnboardingM
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#121421]/80 backdrop-blur-md animate-in fade-in duration-300">
       <div className="w-full max-w-xl max-h-[90vh] overflow-y-auto no-scrollbar">
         <BorderGlow {...OVERVIEW_GLOW} className="w-full">
-          <div className="p-6 md:p-8 bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] rounded-[28px] border border-[#727578]/30 shadow-2xl">
+          <div className="p-4 sm:p-6 md:p-8 bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] rounded-[28px] border border-[#727578]/30 shadow-2xl">
             
             {/* Header */}
             <div className="text-center mb-6">

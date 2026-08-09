@@ -52,12 +52,12 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
           {/* Header Logo */}
           <div className="pb-4 border-b border-[#727578]/30 flex items-center justify-between shrink-0" suppressHydrationWarning>
             <Link href="/" onClick={onClose} className="flex items-center gap-3 group">
-              <div className="w-10 h-10 rounded-2xl overflow-hidden shrink-0 group-hover:scale-105 transition-transform border border-[#727578]/40" suppressHydrationWarning>
-                <img src="/logo.png" alt="ControL-D Logo" className="w-full h-full object-cover" />
+              <div className="w-10 h-10 rounded-2xl overflow-hidden shrink-0 group-hover:scale-105 transition-transform border border-[#727578]/40 shadow-[0_4px_15px_rgba(25,71,147,0.4)] animate-[float_3s_ease-in-out_infinite]" style={{ transformStyle: 'preserve-3d', perspective: '500px' }} suppressHydrationWarning>
+                <img src="/logo.png" alt="ControL-D Logo" className="w-full h-full object-cover transition-transform group-hover:-rotate-y-12" />
               </div>
-              <div suppressHydrationWarning>
-                <span className="font-heading font-black text-base bg-gradient-to-r from-[#e8e8e8] via-[#b0b0b0] to-[#8a8a8a] bg-clip-text text-transparent block leading-none tracking-tight">ControL-D</span>
-                <span className="text-[9px] text-[#727578] uppercase tracking-widest font-bold mt-1 block">AI Health Portal</span>
+              <div suppressHydrationWarning className="animate-[float_3s_ease-in-out_infinite_0.2s]">
+                <span className="font-heading font-black text-base bg-gradient-to-r from-[#e8e8e8] via-[#b0b0b0] to-[#8a8a8a] bg-clip-text text-transparent block leading-none tracking-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">ControL-D</span>
+                <span className="text-[9px] text-[#194793] uppercase tracking-widest font-extrabold mt-1 block drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">AI Health Portal</span>
               </div>
             </Link>
 
@@ -77,9 +77,9 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
               items={NAV_ITEMS}
               activeHref={pathname}
               onItemClick={onClose}
-              baseColor="#194793"
-              pillColor="rgba(114, 117, 120, 0.2)"
-              pillTextColor="#e4e4e7"
+              baseColor="rgba(25, 71, 147, 0.15)"
+              pillColor="transparent"
+              pillTextColor="#727578"
               hoveredPillTextColor="#ffffff"
             />
           </nav>

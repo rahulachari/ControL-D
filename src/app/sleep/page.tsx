@@ -81,7 +81,7 @@ export default function SleepPage() {
   );
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 pb-28 sm:pb-12">
+    <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6 pb-28 sm:pb-12">
       <div className="flex flex-col gap-1">
         <h1 className="text-3xl font-heading font-black text-[#194793] tracking-tight [text-shadow:2px_2px_0px_#121421] flex items-center gap-2">
           <Moon className="w-7 h-7 text-[#194793]" /> Sleep Tracker
@@ -89,10 +89,10 @@ export default function SleepPage() {
         <p className="text-sm text-zinc-300 font-medium">Log sleep and understand its impact on blood sugar.</p>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-6">
+      <div className="grid lg:grid-cols-2 gap-4 sm:gap-6">
         {/* Log Form */}
         <BorderGlow {...OVERVIEW_GLOW} className="w-full">
-          <div className="p-6 bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] rounded-[24px] border border-[#727578]/30 shadow-lg">
+          <div className="p-4 sm:p-6 bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] rounded-[24px] border border-[#727578]/30 shadow-lg">
             <h3 className="text-lg font-heading font-black text-[#194793] [text-shadow:1px_1px_0px_#121421] mb-5">Log Last Night's Sleep</h3>
 
             <div className="space-y-5">
@@ -152,9 +152,9 @@ export default function SleepPage() {
         </BorderGlow>
 
         {/* Score & Insights */}
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           <BorderGlow {...OVERVIEW_GLOW} className="w-full">
-            <div className="p-6 text-center bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] rounded-[24px] border border-[#727578]/30 shadow-lg">
+            <div className="p-4 sm:p-6 text-center bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] rounded-[24px] border border-[#727578]/30 shadow-lg">
               <h3 className="text-xs font-black uppercase tracking-widest text-[#194793] mb-2">Sleep Score</h3>
               <div className={`text-5xl font-heading font-black ${scoreColor} [text-shadow:2px_2px_0px_#121421]`}>{sleepScore}</div>
               <span className={`text-xs font-black uppercase tracking-widest ${scoreColor} block mt-1`}>{scoreLabel}</span>
@@ -168,7 +168,7 @@ export default function SleepPage() {
 
           {/* Weekly Chart */}
           <BorderGlow {...OVERVIEW_GLOW} className="w-full">
-            <div className="p-6 bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] rounded-[24px] border border-[#727578]/30 shadow-lg">
+            <div className="p-4 sm:p-6 bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] rounded-[24px] border border-[#727578]/30 shadow-lg">
               <div className="flex items-center gap-2 mb-5">
                 <TrendingUp className="w-5 h-5 text-[#194793]" />
                 <h3 className="text-lg font-heading font-black text-[#194793] [text-shadow:1px_1px_0px_#121421]">This Week</h3>
@@ -195,7 +195,7 @@ export default function SleepPage() {
           </BorderGlow>
 
           {/* Diabetes + Sleep Insight */}
-          <div className="bg-[#121421] border border-[#727578]/40 rounded-3xl p-6 shadow-inner">
+          <div className="bg-[#121421] border border-[#727578]/40 rounded-3xl p-4 sm:p-6 shadow-inner">
             <h4 className="text-xs font-black text-[#194793] uppercase tracking-widest mb-3">💡 Diabetes & Sleep</h4>
             <ul className="text-xs font-medium text-zinc-300 space-y-2">
               <li>• Poor sleep increases insulin resistance by up to 25%</li>

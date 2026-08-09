@@ -214,6 +214,18 @@ export function addMeal(meal: Omit<MealEntry, "id">): DayData {
   return day;
 }
 
+export function removeMealByType(type: string): DayData {
+  const day = getDayData();
+  for (let i = day.meals.length - 1; i >= 0; i--) {
+    if (day.meals[i].type === type) {
+      day.meals.splice(i, 1);
+      break;
+    }
+  }
+  saveDayData(day);
+  return day;
+}
+
 export function getTotalCalories(date?: string): number {
   const day = getDayData(date);
   return day.meals.reduce((s, m) => s + m.calories, 0);

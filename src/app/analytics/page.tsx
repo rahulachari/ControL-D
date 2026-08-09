@@ -43,18 +43,18 @@ export default function AnalyticsPage() {
   function BarChartSimple({ data, labels, color, unit, maxVal }: { data: number[]; labels: string[]; color: string; unit: string; maxVal?: number }) {
     const max = maxVal || Math.max(...data, 1);
     return (
-      <div className="flex items-end gap-2 h-28">
+      <div className="flex items-end gap-1.5 sm:gap-2 h-28">
         {data.map((val, i) => {
           const pct = max > 0 ? (val / max) * 100 : 0;
           const isToday = i === data.length - 1;
           return (
-            <div key={i} className="flex-1 flex flex-col items-center gap-1">
-              <span className="text-[8px] text-slate-500 font-semibold">{val > 0 ? `${val}${unit}` : "—"}</span>
-              <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-lg overflow-hidden" style={{ height: "70px" }}>
+            <div key={i} className="flex-1 flex flex-col items-center gap-1 min-w-0">
+              <span className="text-[8px] text-zinc-400 font-extrabold truncate max-w-full">{val > 0 ? `${val}${unit}` : "—"}</span>
+              <div className="w-full bg-[#121421] rounded-lg overflow-hidden border border-[#727578]/30" style={{ height: "70px" }}>
                 <div className={`w-full rounded-lg transition-all duration-500 ${color}`}
                   style={{ height: `${pct}%`, marginTop: `${100 - pct}%` }} />
               </div>
-              <span className={`text-[9px] font-semibold ${isToday ? "text-blue-500" : "text-slate-400"}`}>{labels[i]}</span>
+              <span className={`text-[9px] font-bold ${isToday ? "text-[#194793]" : "text-zinc-400"} truncate max-w-full`}>{labels[i]}</span>
             </div>
           );
         })}
@@ -63,7 +63,7 @@ export default function AnalyticsPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6 pb-28 sm:pb-12">
+    <div className="max-w-6xl mx-auto space-y-4 sm:space-y-6 pb-28 sm:pb-12">
       <div>
         <h1 className="text-3xl font-heading font-black text-[#194793] tracking-tight [text-shadow:2px_2px_0px_#121421] flex items-center gap-2">
           <BarChart3 className="w-7 h-7 text-[#194793]" /> Health Analytics
@@ -72,63 +72,63 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Adherence Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
         {metrics.map((m, i) => {
           const Icon = m.icon;
           return (
-            <div key={i} className="bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] backdrop-blur-xl border border-[#727578]/30 rounded-2xl p-5 shadow-md text-center">
+            <div key={i} className="bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] backdrop-blur-xl border border-[#727578]/30 rounded-2xl p-4 sm:p-5 shadow-md text-center">
               <div className={`w-10 h-10 rounded-xl bg-[#194793] text-white flex items-center justify-center mx-auto mb-2 shadow-md`}>
                 <Icon className="w-5 h-5" />
               </div>
-              <div className={`text-2xl font-heading font-bold ${m.color}`}>{m.value}</div>
-              <span className="text-[10px] font-semibold text-slate-500">{m.label}</span>
+              <div className={`text-2xl font-heading font-black text-[#194793] [text-shadow:1.5px_1.5px_0px_#121421]`}>{m.value}</div>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 block mt-0.5">{m.label}</span>
             </div>
           );
         })}
       </div>
 
       {/* Charts Grid */}
-      <div className="grid md:grid-cols-2 gap-6">
-        <div className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border border-white/20 dark:border-slate-800 rounded-3xl p-6 shadow-xl">
+      <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
+        <div className="bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] backdrop-blur-xl border border-[#727578]/30 rounded-3xl p-4 sm:p-6 shadow-xl">
           <div className="flex items-center gap-2 mb-4">
-            <Activity className="w-5 h-5 text-blue-500" />
-            <h3 className="text-sm font-heading font-bold text-slate-900 dark:text-white">Blood Sugar (Avg mg/dL)</h3>
+            <Activity className="w-5 h-5 text-[#194793]" />
+            <h3 className="text-sm font-heading font-black text-[#194793] [text-shadow:1px_1px_0px_#121421]">Blood Sugar (Avg mg/dL)</h3>
           </div>
-          <BarChartSimple data={sugarData} labels={dayLabels} color="bg-gradient-to-t from-blue-500 to-blue-400" unit="" maxVal={200} />
+          <BarChartSimple data={sugarData} labels={dayLabels} color="bg-[#194793]" unit="" maxVal={200} />
         </div>
 
-        <div className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border border-white/20 dark:border-slate-800 rounded-3xl p-6 shadow-xl">
+        <div className="bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] backdrop-blur-xl border border-[#727578]/30 rounded-3xl p-4 sm:p-6 shadow-xl">
           <div className="flex items-center gap-2 mb-4">
-            <Droplet className="w-5 h-5 text-sky-500" />
-            <h3 className="text-sm font-heading font-bold text-slate-900 dark:text-white">Water Intake (L)</h3>
+            <Droplet className="w-5 h-5 text-[#194793]" />
+            <h3 className="text-sm font-heading font-black text-[#194793] [text-shadow:1px_1px_0px_#121421]">Water Intake (L)</h3>
           </div>
-          <BarChartSimple data={waterData.map((v) => parseFloat(v.toFixed(1)))} labels={dayLabels} color="bg-gradient-to-t from-sky-500 to-sky-400" unit="L" maxVal={4} />
+          <BarChartSimple data={waterData.map((v) => parseFloat(v.toFixed(1)))} labels={dayLabels} color="bg-[#194793]" unit="L" maxVal={4} />
         </div>
 
-        <div className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border border-white/20 dark:border-slate-800 rounded-3xl p-6 shadow-xl">
+        <div className="bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] backdrop-blur-xl border border-[#727578]/30 rounded-3xl p-4 sm:p-6 shadow-xl">
           <div className="flex items-center gap-2 mb-4">
-            <Dumbbell className="w-5 h-5 text-amber-500" />
-            <h3 className="text-sm font-heading font-bold text-slate-900 dark:text-white">Exercise (min)</h3>
+            <Dumbbell className="w-5 h-5 text-[#194793]" />
+            <h3 className="text-sm font-heading font-black text-[#194793] [text-shadow:1px_1px_0px_#121421]">Exercise (min)</h3>
           </div>
-          <BarChartSimple data={exerciseData} labels={dayLabels} color="bg-gradient-to-t from-amber-500 to-amber-400" unit="m" maxVal={60} />
+          <BarChartSimple data={exerciseData} labels={dayLabels} color="bg-[#194793]" unit="m" maxVal={60} />
         </div>
 
-        <div className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border border-white/20 dark:border-slate-800 rounded-3xl p-6 shadow-xl">
+        <div className="bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] backdrop-blur-xl border border-[#727578]/30 rounded-3xl p-4 sm:p-6 shadow-xl">
           <div className="flex items-center gap-2 mb-4">
-            <Moon className="w-5 h-5 text-indigo-500" />
-            <h3 className="text-sm font-heading font-bold text-slate-900 dark:text-white">Sleep (hours)</h3>
+            <Moon className="w-5 h-5 text-[#194793]" />
+            <h3 className="text-sm font-heading font-black text-[#194793] [text-shadow:1px_1px_0px_#121421]">Sleep (hours)</h3>
           </div>
-          <BarChartSimple data={sleepData} labels={dayLabels} color="bg-gradient-to-t from-indigo-500 to-indigo-400" unit="h" maxVal={10} />
+          <BarChartSimple data={sleepData} labels={dayLabels} color="bg-[#194793]" unit="h" maxVal={10} />
         </div>
       </div>
 
       {/* Calorie Chart */}
-      <div className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border border-white/20 dark:border-slate-800 rounded-3xl p-6 shadow-xl">
+      <div className="bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] backdrop-blur-xl border border-[#727578]/30 rounded-3xl p-4 sm:p-6 shadow-xl">
         <div className="flex items-center gap-2 mb-4">
-          <Utensils className="w-5 h-5 text-emerald-500" />
-          <h3 className="text-sm font-heading font-bold text-slate-900 dark:text-white">Calorie Intake (kcal)</h3>
+          <Utensils className="w-5 h-5 text-[#194793]" />
+          <h3 className="text-sm font-heading font-black text-[#194793] [text-shadow:1px_1px_0px_#121421]">Calorie Intake (kcal)</h3>
         </div>
-        <BarChartSimple data={calData} labels={dayLabels} color="bg-gradient-to-t from-emerald-500 to-emerald-400" unit="" maxVal={2500} />
+        <BarChartSimple data={calData} labels={dayLabels} color="bg-[#194793]" unit="" maxVal={2500} />
       </div>
     </div>
   );

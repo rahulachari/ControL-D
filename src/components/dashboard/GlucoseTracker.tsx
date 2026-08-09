@@ -201,8 +201,8 @@ export default function GlucoseTracker() {
         <div className="lg:col-span-8 space-y-6">
 
           {/* Chart */}
-          <BorderGlow {...OVERVIEW_GLOW} className="w-full">
-            <div className="p-4 sm:p-6 bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] rounded-[24px] border border-[#727578]/30 shadow-lg">
+          <BorderGlow {...OVERVIEW_GLOW} className="w-full min-w-0">
+            <div className="p-4 sm:p-6 bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] rounded-[24px] border border-[#727578]/30 shadow-lg min-w-0 w-full">
               <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-2.5">
                   <div className="w-8 h-8 rounded-2xl bg-[#194793] text-white flex items-center justify-center font-bold shadow-md">
@@ -288,15 +288,15 @@ export default function GlucoseTracker() {
                   {[...readings].reverse().map((r) => {
                     const status = getSugarStatus(r.value);
                     return (
-                      <div key={r.id} className="flex items-center justify-between px-4 py-3.5 rounded-2xl bg-[#121421] border border-[#727578]/40 hover:border-[#194793] transition-colors">
-                        <div className="flex items-center gap-3">
-                          <span className="text-2xl font-heading font-extrabold text-[#194793] [text-shadow:1px_1px_0px_#121421]">{r.value}</span>
+                      <div key={r.id} className="flex flex-col min-[380px]:flex-row items-start min-[380px]:items-center justify-between gap-2 px-3.5 py-3 sm:px-4 sm:py-3.5 rounded-2xl bg-[#121421] border border-[#727578]/40 hover:border-[#194793] transition-colors">
+                        <div className="flex items-center gap-2.5 sm:gap-3 flex-wrap">
+                          <span className="text-xl sm:text-2xl font-heading font-extrabold text-[#194793] [text-shadow:1px_1px_0px_#121421]">{r.value}</span>
                           <span className="text-xs font-bold text-zinc-400">mg/dL</span>
-                          <span className="text-xs font-extrabold px-2.5 py-1 rounded-full border bg-[#121421] border-[#727578]/40 text-white">
+                          <span className="text-[10px] sm:text-xs font-extrabold px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full border bg-[#121421] border-[#727578]/40 text-white">
                             {status.emoji} {status.label}
                           </span>
                         </div>
-                        <div className="text-right">
+                        <div className="text-left min-[380px]:text-right w-full min-[380px]:w-auto border-t min-[380px]:border-0 border-[#727578]/20 pt-1.5 min-[380px]:pt-0">
                           <div className="text-xs font-bold text-zinc-300">
                             {new Date(r.time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                           </div>

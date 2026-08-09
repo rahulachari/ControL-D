@@ -91,12 +91,12 @@ export default function WaterTracker() {
   );
 
   return (
-    <div className="grid lg:grid-cols-12 gap-6">
+    <div className="grid lg:grid-cols-12 gap-4 sm:gap-6">
 
       {/* ===== Main Bottle & Controls ===== */}
       <div className="lg:col-span-5">
         <BorderGlow {...OVERVIEW_GLOW} className="w-full h-full">
-          <div className="p-6 flex flex-col items-center text-center bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] rounded-[24px] border border-[#727578]/30 shadow-lg">
+          <div className="p-4 sm:p-6 flex flex-col items-center text-center bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] rounded-[24px] border border-[#727578]/30 shadow-lg">
             <div className="flex items-center gap-2 mb-4 self-start">
               <div className="w-8 h-8 rounded-2xl bg-[#194793] text-white flex items-center justify-center font-bold shadow-md">
                 <Waves className="w-5 h-5 text-white" />
@@ -156,7 +156,7 @@ export default function WaterTracker() {
                 <button
                   key={value}
                   onClick={() => handleAdd(value)}
-                  className="px-1 sm:px-3 py-2.5 sm:py-3 rounded-2xl bg-[#121421] hover:bg-[#194793] text-[#194793] hover:text-white font-black text-[11px] sm:text-sm transition-all border border-[#727578]/40 flex items-center justify-center gap-0.5 whitespace-nowrap shadow-sm"
+                  className="px-1 sm:px-3 py-2 sm:py-3 rounded-2xl bg-[#121421] hover:bg-[#194793] text-[#194793] hover:text-white font-black text-[10px] min-[360px]:text-[11px] sm:text-sm transition-all border border-[#727578]/40 flex items-center justify-center gap-0.5 whitespace-nowrap shadow-sm min-w-0"
                 >
                   <Plus className="w-3 h-3 shrink-0 text-[#194793] group-hover:text-white" />
                   <span>{label}</span>
@@ -171,11 +171,11 @@ export default function WaterTracker() {
                 placeholder="Custom ml"
                 value={customAmount}
                 onChange={(e) => setCustomAmount(e.target.value)}
-                className="flex-1 px-4 py-3 rounded-2xl bg-[#121421] border border-[#727578]/40 outline-none text-sm font-bold text-white placeholder-zinc-500 focus:border-[#194793] transition-all shadow-inner"
+                className="flex-1 min-w-0 px-3.5 sm:px-4 py-3 rounded-2xl bg-[#121421] border border-[#727578]/40 outline-none text-xs sm:text-sm font-bold text-white placeholder-zinc-500 focus:border-[#194793] transition-all shadow-inner"
               />
               <button
                 onClick={handleCustomAdd}
-                className="px-6 py-3 rounded-2xl bg-[#194793] text-white font-black text-sm shadow-lg shadow-[#121421] hover:scale-105 transition-all border border-[#727578]/40"
+                className="px-4 sm:px-6 py-3 rounded-2xl bg-[#194793] text-white font-black text-xs sm:text-sm shadow-lg shadow-[#121421] hover:scale-105 transition-all border border-[#727578]/40 shrink-0"
               >
                 Add
               </button>
@@ -192,11 +192,11 @@ export default function WaterTracker() {
       </div>
 
       {/* ===== Right Column: Log + Weekly ===== */}
-      <div className="lg:col-span-7 space-y-6">
+      <div className="lg:col-span-7 space-y-4 sm:space-y-6">
 
         {/* Weekly Chart */}
         <BorderGlow {...OVERVIEW_GLOW} className="w-full">
-          <div className="p-6 bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] rounded-[24px] border border-[#727578]/30 shadow-lg">
+          <div className="p-4 sm:p-6 bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] rounded-[24px] border border-[#727578]/30 shadow-lg">
             <div className="flex items-center gap-2 mb-5">
               <div className="w-8 h-8 rounded-2xl bg-[#194793] text-white flex items-center justify-center font-bold shadow-md">
                 <TrendingUp className="w-5 h-5 text-white" />
@@ -232,7 +232,7 @@ export default function WaterTracker() {
 
         {/* Today's Log */}
         <BorderGlow {...OVERVIEW_GLOW} className="w-full">
-          <div className="p-6 bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] rounded-[24px] border border-[#727578]/30 shadow-lg">
+          <div className="p-4 sm:p-6 bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] rounded-[24px] border border-[#727578]/30 shadow-lg">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-2xl bg-[#194793] text-white flex items-center justify-center font-bold shadow-md">

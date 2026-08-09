@@ -150,7 +150,7 @@ export default function GlobalMedAlarmNotifier() {
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/85 backdrop-blur-lg animate-in fade-in duration-300">
       <div className="w-full max-w-md animate-bounce-short">
         <BorderGlow {...MONO_GLOW} className="w-full border-rose-500/50 shadow-[0_0_50px_rgba(244,63,94,0.4)]">
-          <div className="p-6 text-center space-y-5" suppressHydrationWarning>
+          <div className="p-4 sm:p-6 text-center space-y-5" suppressHydrationWarning>
             
             <div className="w-16 h-16 rounded-3xl bg-rose-500/20 text-rose-400 border border-rose-500/30 flex items-center justify-center mx-auto shadow-lg shadow-rose-500/20 animate-pulse">
               <Bell className="w-8 h-8 text-rose-400 animate-spin-slow" />

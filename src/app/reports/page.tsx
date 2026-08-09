@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { FileText, Download, Activity, Droplet, Pill, Dumbbell, Moon, Brain, Heart, Upload, Sparkles } from "lucide-react";
+import { FileText, Download, Activity, Droplet, Pill, Dumbbell, Moon, Brain, Heart, Upload, Sparkles, Utensils } from "lucide-react";
 import { getProfile, getWeeklyData, calculateHealthScore, type UserProfile, type DayData } from "@/lib/healthStore";
 import ReportAnalyzer from "@/components/reports/ReportAnalyzer";
 
@@ -52,6 +52,11 @@ export default function ReportsPage() {
     const daysWithMeds = weeklyData.filter((d) => d.meds.length > 0);
     if (daysWithMeds.length === 0) return 100;
     return Math.round(daysWithMeds.reduce((s, d) => s + (d.meds.filter((m) => m.status === "taken").length / d.meds.length) * 100, 0) / daysWithMeds.length);
+  })();
+
+  const mealsAdherence = (() => {
+    const daysWithSufficientMeals = weeklyData.filter((d) => d.meals.length >= 3);
+    return weeklyData.length > 0 ? Math.round((daysWithSufficientMeals.length / weeklyData.length) * 100) : 0;
   })();
 
   const hba1c = avgSugar > 0 ? ((avgSugar + 46.7) / 28.7).toFixed(1) : "—";
@@ -187,6 +192,7 @@ export default function ReportsPage() {
                       { label: "Exercise", value: `${avgExercisePerDay} min`, target: "30 min", status: avgExercisePerDay >= 15 ? "✅" : "⚠️", icon: Dumbbell },
                       { label: "Sleep", value: `${avgSleep}h`, target: "7-8h", status: parseFloat(avgSleep as string) >= 7 ? "✅" : avgSleep !== "—" ? "⚠️" : "—", icon: Moon },
                       { label: "Meds", value: `${medsAdherence}%`, target: "100%", status: medsAdherence >= 90 ? "✅" : "⚠️", icon: Pill },
+                      { label: "Meals", value: `${mealsAdherence}%`, target: "100%", status: mealsAdherence >= 80 ? "✅" : "⚠️", icon: Utensils },
                     ].map((row, i) => {
                       const Icon = row.icon;
                       return (

@@ -106,7 +106,7 @@ export default function MedsPage() {
   const adherencePct = totalMeds > 0 ? Math.round((takenMeds / totalMeds) * 100) : 0;
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6 pb-28 sm:pb-12" suppressHydrationWarning>
+    <div className="max-w-5xl mx-auto space-y-4 sm:space-y-6 pb-28 sm:pb-12" suppressHydrationWarning>
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4" suppressHydrationWarning>
@@ -191,8 +191,8 @@ export default function MedsPage() {
                 
                 <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
                   {/* Manual Hour Entry */}
-                  <div className="flex-1 min-w-[90px]">
-                    <span className="text-[10px] font-bold text-zinc-500 uppercase block mb-1">Hour (1 - 12)</span>
+                  <div className="flex-1 min-w-[65px]">
+                    <span className="text-[10px] font-bold text-zinc-500 uppercase block mb-1">Hour</span>
                     <input
                       type="number"
                       min={1}
@@ -200,15 +200,15 @@ export default function MedsPage() {
                       value={hour12}
                       onChange={(e) => setHour12(e.target.value)}
                       placeholder="08"
-                      className="w-full px-3 py-2.5 rounded-xl bg-zinc-950 border border-zinc-700 text-white font-black text-center text-sm outline-none focus:border-white transition-all"
+                      className="w-full px-2 sm:px-3 py-2.5 rounded-xl bg-zinc-950 border border-zinc-700 text-white font-black text-center text-xs sm:text-sm outline-none focus:border-white transition-all"
                     />
                   </div>
 
                   <span className="text-xl font-extrabold text-zinc-500 self-end pb-2">:</span>
 
                   {/* Manual Minute Entry */}
-                  <div className="flex-1 min-w-[90px]">
-                    <span className="text-[10px] font-bold text-zinc-500 uppercase block mb-1">Minute (0 - 59)</span>
+                  <div className="flex-1 min-w-[65px]">
+                    <span className="text-[10px] font-bold text-zinc-500 uppercase block mb-1">Minute</span>
                     <input
                       type="number"
                       min={0}
@@ -216,12 +216,12 @@ export default function MedsPage() {
                       value={minute}
                       onChange={(e) => setMinute(e.target.value)}
                       placeholder="00"
-                      className="w-full px-3 py-2.5 rounded-xl bg-zinc-950 border border-zinc-700 text-white font-black text-center text-sm outline-none focus:border-white transition-all"
+                      className="w-full px-2 sm:px-3 py-2.5 rounded-xl bg-zinc-950 border border-zinc-700 text-white font-black text-center text-xs sm:text-sm outline-none focus:border-white transition-all"
                     />
                   </div>
 
                   {/* AM / PM Toggle Selector */}
-                  <div className="flex-1 min-w-[130px]">
+                  <div className="flex-1 min-w-[90px]">
                     <span className="text-[10px] font-bold text-zinc-500 uppercase block mb-1">Period</span>
                     <div className="flex rounded-xl bg-zinc-950 border border-zinc-700 p-1">
                       <button

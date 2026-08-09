@@ -45,7 +45,7 @@ export default function DailyGoals() {
   };
 
   return (
-    <BorderGlow {...OVERVIEW_GLOW} className="w-full">
+    <BorderGlow {...OVERVIEW_GLOW} className="w-full card-3d-hover">
       <div className="p-6 bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] rounded-[24px] border border-[#727578]/30">
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-2.5">

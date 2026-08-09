@@ -35,8 +35,8 @@ export default function MoodTracker() {
   };
 
   return (
-    <BorderGlow {...OVERVIEW_GLOW} className="w-full">
-      <div className="p-6 bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] rounded-[24px] border border-[#727578]/30">
+    <BorderGlow {...OVERVIEW_GLOW} className="w-full card-3d-hover">
+      <div className="p-4 sm:p-6 bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] rounded-[24px] border border-[#727578]/30">
         <div className="flex items-center gap-2.5 mb-4">
           <div className="w-8 h-8 rounded-2xl bg-[#194793] text-white flex items-center justify-center font-black shadow-md shadow-[#121421]">
             <SmilePlus className="w-5 h-5" />
@@ -45,22 +45,25 @@ export default function MoodTracker() {
         </div>
 
         <div className="grid grid-cols-3 sm:grid-cols-6 gap-2.5">
-          {MOODS.map((m) => (
-            <button
-              key={m.value}
-              onClick={() => handleMood(m.value)}
-              className={`flex flex-col items-center gap-1.5 px-3 py-3.5 rounded-2xl border transition-all duration-200 cursor-pointer ${
-                currentMood === m.value
-                  ? "bg-[#194793] border-[#194793] text-white shadow-lg shadow-[#121421] scale-105"
-                  : "border-[#727578]/40 bg-[#121421] text-zinc-300 hover:border-[#194793] hover:text-[#194793]"
-              }`}
-            >
-              <span className="text-2xl">{m.emoji}</span>
-              <span className="text-[10px] font-black uppercase tracking-wider">
-                {m.label}
-              </span>
-            </button>
-          ))}
+          {MOODS.map((m) => {
+            const isSelected = currentMood === m.value;
+            return (
+              <button
+                key={m.value}
+                onClick={() => handleMood(m.value)}
+                className={`p-3 sm:p-4 rounded-2xl flex flex-col items-center justify-center transition-all border ${
+                  isSelected 
+                    ? "bg-[#194793] border-[#194793] shadow-md shadow-[#121421] scale-105" 
+                    : "bg-[#121421] border-[#727578]/40 hover:border-[#194793] hover:bg-[#194793]/50"
+                }`}
+              >
+                <span className="text-2xl sm:text-3xl mb-1 icon-3d-hover inline-block">{m.emoji}</span>
+                <span className={`text-[10px] sm:text-xs font-black ${isSelected ? "text-white" : "text-zinc-400"}`}>
+                  {m.label}
+                </span>
+              </button>
+            );
+          })}
         </div>
       </div>
     </BorderGlow>

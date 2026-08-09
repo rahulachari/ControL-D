@@ -190,7 +190,7 @@ export default function WorkoutPage() {
   );
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6 pb-28 sm:pb-12">
+    <div className="max-w-5xl mx-auto space-y-4 sm:space-y-6 pb-28 sm:pb-12">
       <div className="flex flex-col gap-1">
         <h1 className="text-3xl font-heading font-black text-[#194793] tracking-tight [text-shadow:2px_2px_0px_#121421] flex items-center gap-2">
           <Dumbbell className="w-7 h-7 text-[#194793]" /> AI Fitness Coach
@@ -200,7 +200,7 @@ export default function WorkoutPage() {
 
       {/* Today's Focus */}
       <BorderGlow {...OVERVIEW_GLOW} className="w-full">
-        <div className="p-6 flex flex-col sm:flex-row items-start sm:items-center gap-6 bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] rounded-[24px] border border-[#727578]/30 shadow-lg">
+        <div className="p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] rounded-[24px] border border-[#727578]/30 shadow-lg">
           <div className="w-14 h-14 rounded-2xl bg-[#194793] text-white flex items-center justify-center text-3xl shrink-0 shadow-lg shadow-[#121421] border border-[#727578]/40">
             🏋️
           </div>

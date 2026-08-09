@@ -110,7 +110,7 @@ export default function Achievements() {
 
   return (
     <BorderGlow {...OVERVIEW_GLOW} className="w-full">
-      <div className="p-6 bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] rounded-[24px] border border-[#727578]/30">
+      <div className="p-4 sm:p-6 bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] rounded-[24px] border border-[#727578]/30">
         <div className="flex items-center gap-2.5 mb-5">
           <div className="w-8 h-8 rounded-2xl bg-[#194793] text-white flex items-center justify-center font-black shadow-md shadow-[#121421]">
             <Trophy className="w-5 h-5" />

@@ -25,9 +25,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Sidebar isOpen={mobileSidebarOpen} onClose={() => setMobileSidebarOpen(false)} />
-      <div className="lg:pl-64 pl-0 flex flex-col min-h-screen relative z-10 w-full min-w-0 overflow-x-hidden" suppressHydrationWarning>
+      <div className="lg:pl-64 pl-0 flex flex-col min-h-screen relative z-10 w-full min-w-0 overflow-x-clip" suppressHydrationWarning>
         <Header onMenuClick={() => setMobileSidebarOpen(true)} />
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 w-full min-w-0" suppressHydrationWarning>
+        <main className="flex-1 px-2 sm:px-6 pt-0 pb-6 w-full min-w-0" suppressHydrationWarning>
           {children}
         </main>
       </div>

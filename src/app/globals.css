@@ -86,10 +86,11 @@
   * {
     border-color: var(--border);
   }
-  body {
+  html, body {
     background-color: var(--background);
     color: var(--foreground);
     font-family: var(--font-sans);
+    overflow-x: hidden;
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
@@ -110,4 +111,45 @@
 
 .border-cool-gray {
   border-color: rgba(114, 117, 120, 0.4);
+}
+@keyframes float {
+  0% { transform: translateY(0px) rotateY(0deg); }
+  50% { transform: translateY(-5px) rotateY(5deg); }
+  100% { transform: translateY(0px) rotateY(0deg); }
+}
+
+@keyframes subtle-float {
+  0%, 100% { transform: translateY(0) perspective(1000px) rotateX(0) rotateY(0); }
+  50% { transform: translateY(-4px) perspective(1000px) rotateX(2deg) rotateY(-1deg); box-shadow: 0 10px 25px rgba(25, 71, 147, 0.15); }
+}
+
+.card-3d-hover {
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  animation: subtle-float 6s ease-in-out infinite;
+  will-change: transform, box-shadow;
+}
+
+.card-3d-hover:nth-child(even) {
+  animation-delay: 1.5s;
+}
+
+.card-3d-hover:nth-child(3n) {
+  animation-delay: 3s;
+}
+
+.card-3d-hover:hover, .card-3d-hover:active {
+  animation-play-state: paused;
+  transform: translateY(-8px) scale(1.02) rotateX(5deg) rotateY(-5deg);
+  box-shadow: 0 15px 35px rgba(25, 71, 147, 0.3);
+  z-index: 10;
+}
+
+.icon-3d-hover {
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.card-3d-hover:hover .icon-3d-hover, .card-3d-hover:active .icon-3d-hover {
+  transform: translateZ(25px) scale(1.15);
 }

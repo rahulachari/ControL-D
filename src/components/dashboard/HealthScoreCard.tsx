@@ -43,8 +43,8 @@ export default function HealthScoreCard() {
   const circumference = 2 * Math.PI * 52;
 
   return (
-    <BorderGlow {...OVERVIEW_GLOW} className="w-full h-full">
-      <div className="p-6 flex flex-col items-center justify-center text-center relative overflow-hidden h-full bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] rounded-[24px] border border-[#727578]/30">
+    <BorderGlow {...OVERVIEW_GLOW} className="w-full h-full card-3d-hover">
+      <div className="p-4 sm:p-5 flex flex-col items-center justify-center text-center relative overflow-hidden h-full bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] rounded-[24px] border border-[#727578]/30">
         <div className="absolute top-4 right-4">
           <ShieldCheck className="w-5 h-5 text-[#194793]" />
         </div>

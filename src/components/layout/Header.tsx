@@ -116,7 +116,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full pt-3 px-4 sm:px-6 mb-4" suppressHydrationWarning>
+      <header className="sticky top-0 z-40 w-full pt-3 px-2 sm:px-6 mb-2 sm:mb-4" suppressHydrationWarning>
         <BorderGlow {...OVERVIEW_GLOW} className="w-full">
           <div className="h-16 flex items-center justify-between px-2 sm:px-6 w-full gap-1.5 sm:gap-2 bg-gradient-to-r from-[#727578]/15 via-[#121421] to-[#121421] rounded-[24px] border border-[#727578]/30" suppressHydrationWarning>
             
@@ -135,7 +135,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
               {profile?.name && (
                 <div className="flex items-center gap-1 sm:gap-3 flex-1 min-w-0" suppressHydrationWarning>
                   <span className="text-xs font-semibold text-[#727578] hidden lg:inline shrink-0">Active Patient:</span>
-                  <span className="text-xs sm:text-sm font-extrabold text-[#194793] [text-shadow:1px_1px_0px_#121421] truncate max-w-[60px] min-[380px]:max-w-[100px] sm:max-w-none">{profile.name}</span>
+                  <span className="text-xs sm:text-sm font-extrabold text-[#194793] [text-shadow:1px_1px_0px_#121421] truncate max-w-[70px] min-[360px]:max-w-[120px] sm:max-w-none">{profile.name}</span>
                   
                   {/* Glowing Weight & Height Badges - Hidden on mobile to prevent overflow */}
                   <div className="hidden md:flex items-center gap-1.5 shrink-0 ml-1" suppressHydrationWarning>
@@ -185,7 +185,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
 
                 {/* Notification Popover Drawer */}
                 {isNotifOpen && (
-                  <div className="absolute right-0 top-12 w-72 sm:w-96 bg-[#121421]/95 backdrop-blur-2xl border border-[#727578]/40 rounded-3xl p-4 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                  <div className="absolute right-0 top-12 w-[calc(100vw-32px)] max-w-xs sm:w-96 bg-[#121421]/95 backdrop-blur-2xl border border-[#727578]/40 rounded-3xl p-4 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 duration-200">
                     <div className="flex items-center justify-between pb-3 border-b border-[#727578]/30 mb-3">
                       <div className="flex items-center gap-2">
                         <Bell className="w-4 h-4 text-[#194793]" />
