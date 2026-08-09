@@ -164,9 +164,39 @@ export default function GlobalMedAlarmNotifier() {
   }, [alarmMed, playAlarm, stopAlarm]);
 
   useEffect(() => {
-    const interval = setInterval(checkAlarms, 6000);
-    checkAlarms();
-    return () => clearInterval(interval);
+    if (typeof window === "undefined") return;
+
+    // Use a Web Worker to ensure the timer isn't throttled when the tab is in the background
+    const workerCode = `
+      let intervalId = null;
+      self.onmessage = function(e) {
+        if (e.data === "start") {
+          intervalId = setInterval(() => {
+            self.postMessage("tick");
+          }, 6000);
+        } else if (e.data === "stop") {
+          clearInterval(intervalId);
+        }
+      };
+    `;
+    const blob = new Blob([workerCode], { type: "application/javascript" });
+    const workerUrl = URL.createObjectURL(blob);
+    const worker = new Worker(workerUrl);
+
+    worker.onmessage = (e) => {
+      if (e.data === "tick") {
+        checkAlarms();
+      }
+    };
+
+    worker.postMessage("start");
+    checkAlarms(); // Initial check
+
+    return () => {
+      worker.postMessage("stop");
+      worker.terminate();
+      URL.revokeObjectURL(workerUrl);
+    };
   }, [checkAlarms]);
 
   const handleMarkTaken = (medId: string) => {

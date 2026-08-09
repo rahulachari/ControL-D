@@ -143,45 +143,6 @@ export default function MedsPage() {
     setMeds([...day.meds]);
   };
 
-  const handleSyncCalendar = () => {
-    if (meds.length === 0) {
-      alert("No medications to sync!");
-      return;
-    }
-
-    let icsContent = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//ControL-D//Medication Alarm//EN\n";
-
-    meds.forEach((med) => {
-      const [h, m] = med.scheduledTime.split(":");
-      const now = new Date();
-      now.setHours(parseInt(h), parseInt(m), 0, 0);
-
-      const pad = (n: number) => n.toString().padStart(2, "0");
-      const dtstart = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}T${pad(now.getHours())}${pad(now.getMinutes())}00`;
-
-      icsContent += `BEGIN:VEVENT\n`;
-      icsContent += `UID:${med.id}@controld.app\n`;
-      icsContent += `DTSTAMP:${dtstart}Z\n`;
-      icsContent += `DTSTART:${dtstart}\n`;
-      icsContent += `RRULE:FREQ=DAILY\n`;
-      icsContent += `SUMMARY:⏰ Med: ${med.name} (${med.dosage})\n`;
-      icsContent += `DESCRIPTION:Time to take ${med.name} (${med.dosage}) - ${med.beforeAfterFood.replace(/_/g, " ")}\n`;
-      icsContent += `BEGIN:VALARM\nTRIGGER:-PT0M\nACTION:DISPLAY\nDESCRIPTION:Reminder\nEND:VALARM\n`;
-      icsContent += `END:VEVENT\n`;
-    });
-
-    icsContent += "END:VCALENDAR\n";
-
-    const blob = new Blob([icsContent], { type: "text/calendar;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "Medication_Reminders.ics";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  };
 
   const totalMeds = meds.length;
   const takenMeds = meds.filter((m) => m.status === "taken").length;
@@ -200,12 +161,7 @@ export default function MedsPage() {
           <p className="text-xs sm:text-sm text-zinc-300 font-medium">Set 12-hour AM/PM alarms, track prescriptions, and receive audio reminders.</p>
         </div>
         <div className="flex gap-2">
-          <button
-            onClick={handleSyncCalendar}
-            className="px-4 sm:px-6 py-3 rounded-full bg-zinc-900 text-zinc-300 hover:text-white border border-zinc-700 font-black text-xs sm:text-sm hover:scale-105 transition-all flex items-center justify-center gap-2 shrink-0 uppercase tracking-wider"
-          >
-            <Calendar className="w-4 h-4" /> Sync Calendar
-          </button>
+
           <button
             onClick={() => setShowAddForm(true)}
             className="px-4 sm:px-6 py-3 rounded-full bg-[#194793] text-white font-black text-xs sm:text-sm shadow-lg shadow-[#121421] hover:scale-105 transition-all flex items-center justify-center gap-2 shrink-0 uppercase tracking-wider border border-[#727578]/40"
