@@ -42,6 +42,7 @@ ${userContext ? `Patient: ${userContext.profile?.name || "Patient"}, Sugar Today
 Rules:
 - Be extremely concise, direct, and fast (max 3-4 bullet points).
 - Focus on low-GI foods, South Indian diet (Idli, Pesarattu, Ragi), sugar control, and hydration.
+- CRITICAL: Never invent, guess, or hallucinate medical information. If you do not know, say you do not know.
 - Always include a brief medical disclaimer at the end.`;
 
     if (!apiKey || apiKey.includes("your-api-key")) {
@@ -53,11 +54,9 @@ Rules:
 
     // Supported active Groq models
     const models = [
-      "llama-3.3-70b-versatile",
-      "llama-3.1-8b-instant",
-      "gemma2-9b-it",
       "llama3-70b-8192",
-      "llama3-8b-8192"
+      "mixtral-8x7b-32768",
+      "gemma2-9b-it"
     ];
 
     for (const model of models) {
@@ -74,7 +73,7 @@ Rules:
               { role: "system", content: systemPrompt },
               ...messages.slice(-4).map((m: any) => ({ role: m.role, content: m.content })),
             ],
-            temperature: 0.5,
+            temperature: 0.1,
             max_tokens: 350,
           }),
         });

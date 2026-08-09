@@ -128,11 +128,11 @@ export default function WaterTracker() {
                   
                   {/* Back Wave */}
                   <path d={`M0 ${135 - (pct / 100) * 130} Q25 ${132 - (pct / 100) * 130} 50 ${135 - (pct / 100) * 130} T100 ${135 - (pct / 100) * 130} T150 ${135 - (pct / 100) * 130} T200 ${135 - (pct / 100) * 130} V140 H0Z`}
-                    fill="url(#waterGrad)" opacity="0.6" className="transition-all duration-700 animate-wave-slow" />
+                    fill="url(#waterGrad)" opacity="0.6" className="transition-all duration-700" />
                     
                   {/* Front Wave */}
                   <path d={`M0 ${135 - (pct / 100) * 130} Q25 ${137 - (pct / 100) * 130} 50 ${135 - (pct / 100) * 130} T100 ${135 - (pct / 100) * 130} T150 ${135 - (pct / 100) * 130} T200 ${135 - (pct / 100) * 130} V140 H0Z`}
-                    fill="url(#waterGrad)" opacity="0.4" className="transition-all duration-700 animate-wave" />
+                    fill="url(#waterGrad)" opacity="0.4" className="transition-all duration-700" />
                 </g>
 
                 <text x="50" y="80" textAnchor="middle" className="fill-white" fontSize="16" fontWeight="bold" style={{ textShadow: "0 2px 4px rgba(18, 20, 33, 0.8)" }}>

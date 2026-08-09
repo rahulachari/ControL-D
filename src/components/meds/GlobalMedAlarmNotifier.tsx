@@ -40,6 +40,30 @@ export default function GlobalMedAlarmNotifier() {
     }
   }, []);
 
+  // Background keep-awake hack to prevent JS timer throttling on mobile/locked screen
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    // Tiny silent wav base64
+    const audio = new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA");
+    audio.loop = true;
+    audio.volume = 0.01;
+    
+    const unlockAudio = () => {
+      audio.play().catch(() => {});
+      document.removeEventListener("click", unlockAudio);
+      document.removeEventListener("touchstart", unlockAudio);
+    };
+
+    document.addEventListener("click", unlockAudio);
+    document.addEventListener("touchstart", unlockAudio);
+
+    return () => {
+      audio.pause();
+      document.removeEventListener("click", unlockAudio);
+      document.removeEventListener("touchstart", unlockAudio);
+    };
+  }, []);
+
   const stopAlarm = useCallback(() => {
     stopSpeech();
   }, []);
