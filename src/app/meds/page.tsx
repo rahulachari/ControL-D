@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Pill, Plus, Clock, Bell, CheckCircle, XCircle, SkipForward, VolumeX, Calendar, AlertTriangle, Trash2, Volume2 } from "lucide-react";
+import { Pill, Plus, Clock, Bell, CheckCircle, XCircle, SkipForward, VolumeX, Calendar, AlertTriangle, Trash2, Volume2, Edit2 } from "lucide-react";
 import { getDayData, saveDayData, type MedEntry } from "@/lib/healthStore";
 import { speakMedicationAlert } from "@/lib/speechSynthesis";
 import BorderGlow from "@/components/ui/BorderGlow";
@@ -40,6 +40,7 @@ function convertTo24Hour(hour12: string, min: string, ampm: "AM" | "PM"): string
 export default function MedsPage() {
   const [meds, setMeds] = useState<MedEntry[]>([]);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [editingMedId, setEditingMedId] = useState<string | null>(null);
 
   // 12-Hour AM/PM Time Selector State
   const [name, setName] = useState("");
@@ -57,26 +58,68 @@ export default function MedsPage() {
     setMeds(day.meds);
   }, []);
 
+  const resetForm = () => {
+    setEditingMedId(null);
+    setName(""); setDosage(""); setHour12("08"); setMinute("00"); setAmpm("AM"); setDoctorName(""); setMedNotes(""); setRemaining("");
+  };
+
   const handleAddMed = (e: React.FormEvent) => {
     e.preventDefault();
     const time24 = convertTo24Hour(hour12, minute, ampm);
     const day = getDayData();
-    const newMed: MedEntry = {
-      id: crypto.randomUUID(),
-      name,
-      dosage,
-      scheduledTime: time24,
-      status: "pending",
-      beforeAfterFood,
-      doctorName: doctorName || undefined,
-      remaining: remaining ? parseInt(remaining) : undefined,
-      notes: medNotes || undefined,
-    };
-    day.meds.push(newMed);
+
+    if (editingMedId) {
+      const medIndex = day.meds.findIndex((m) => m.id === editingMedId);
+      if (medIndex !== -1) {
+        day.meds[medIndex] = {
+          ...day.meds[medIndex],
+          name,
+          dosage,
+          scheduledTime: time24,
+          beforeAfterFood,
+          doctorName: doctorName || undefined,
+          remaining: remaining ? parseInt(remaining) : undefined,
+          notes: medNotes || undefined,
+        };
+      }
+    } else {
+      const newMed: MedEntry = {
+        id: crypto.randomUUID(),
+        name,
+        dosage,
+        scheduledTime: time24,
+        status: "pending",
+        beforeAfterFood,
+        doctorName: doctorName || undefined,
+        remaining: remaining ? parseInt(remaining) : undefined,
+        notes: medNotes || undefined,
+      };
+      day.meds.push(newMed);
+    }
+    
     saveDayData(day);
     setMeds([...day.meds]);
     setShowAddForm(false);
-    setName(""); setDosage(""); setHour12("08"); setMinute("00"); setAmpm("AM"); setDoctorName(""); setMedNotes(""); setRemaining("");
+    resetForm();
+  };
+
+  const handleEditClick = (med: MedEntry) => {
+    setEditingMedId(med.id);
+    setName(med.name);
+    setDosage(med.dosage);
+    const [h, m] = med.scheduledTime.split(":");
+    let h12 = parseInt(h, 10);
+    const pm = h12 >= 12;
+    if (h12 > 12) h12 -= 12;
+    if (h12 === 0) h12 = 12;
+    setHour12(h12.toString().padStart(2, "0"));
+    setMinute(m);
+    setAmpm(pm ? "PM" : "AM");
+    setBeforeAfterFood(med.beforeAfterFood);
+    setDoctorName(med.doctorName || "");
+    setMedNotes(med.notes || "");
+    setRemaining(med.remaining ? med.remaining.toString() : "");
+    setShowAddForm(true);
   };
 
   const handleStatusChange = (medId: string, status: "taken" | "missed" | "skipped") => {
@@ -100,6 +143,46 @@ export default function MedsPage() {
     setMeds([...day.meds]);
   };
 
+  const handleSyncCalendar = () => {
+    if (meds.length === 0) {
+      alert("No medications to sync!");
+      return;
+    }
+
+    let icsContent = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//ControL-D//Medication Alarm//EN\n";
+
+    meds.forEach((med) => {
+      const [h, m] = med.scheduledTime.split(":");
+      const now = new Date();
+      now.setHours(parseInt(h), parseInt(m), 0, 0);
+
+      const pad = (n: number) => n.toString().padStart(2, "0");
+      const dtstart = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}T${pad(now.getHours())}${pad(now.getMinutes())}00`;
+
+      icsContent += `BEGIN:VEVENT\n`;
+      icsContent += `UID:${med.id}@controld.app\n`;
+      icsContent += `DTSTAMP:${dtstart}Z\n`;
+      icsContent += `DTSTART:${dtstart}\n`;
+      icsContent += `RRULE:FREQ=DAILY\n`;
+      icsContent += `SUMMARY:⏰ Med: ${med.name} (${med.dosage})\n`;
+      icsContent += `DESCRIPTION:Time to take ${med.name} (${med.dosage}) - ${med.beforeAfterFood.replace(/_/g, " ")}\n`;
+      icsContent += `BEGIN:VALARM\nTRIGGER:-PT0M\nACTION:DISPLAY\nDESCRIPTION:Reminder\nEND:VALARM\n`;
+      icsContent += `END:VEVENT\n`;
+    });
+
+    icsContent += "END:VCALENDAR\n";
+
+    const blob = new Blob([icsContent], { type: "text/calendar;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "Medication_Reminders.ics";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   const totalMeds = meds.length;
   const takenMeds = meds.filter((m) => m.status === "taken").length;
   const missedMeds = meds.filter((m) => m.status === "missed").length;
@@ -116,12 +199,20 @@ export default function MedsPage() {
           </h1>
           <p className="text-xs sm:text-sm text-zinc-300 font-medium">Set 12-hour AM/PM alarms, track prescriptions, and receive audio reminders.</p>
         </div>
-        <button
-          onClick={() => setShowAddForm(true)}
-          className="px-6 py-3 rounded-full bg-[#194793] text-white font-black text-xs sm:text-sm shadow-lg shadow-[#121421] hover:scale-105 transition-all flex items-center justify-center gap-2 shrink-0 uppercase tracking-wider border border-[#727578]/40"
-        >
-          <Plus className="w-4 h-4" /> Add Medicine
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={handleSyncCalendar}
+            className="px-4 sm:px-6 py-3 rounded-full bg-zinc-900 text-zinc-300 hover:text-white border border-zinc-700 font-black text-xs sm:text-sm hover:scale-105 transition-all flex items-center justify-center gap-2 shrink-0 uppercase tracking-wider"
+          >
+            <Calendar className="w-4 h-4" /> Sync Calendar
+          </button>
+          <button
+            onClick={() => setShowAddForm(true)}
+            className="px-4 sm:px-6 py-3 rounded-full bg-[#194793] text-white font-black text-xs sm:text-sm shadow-lg shadow-[#121421] hover:scale-105 transition-all flex items-center justify-center gap-2 shrink-0 uppercase tracking-wider border border-[#727578]/40"
+          >
+            <Plus className="w-4 h-4" /> Add Medicine
+          </button>
+        </div>
       </div>
 
       {/* ===== Stats ===== */}
@@ -273,9 +364,9 @@ export default function MedsPage() {
 
               <div className="md:col-span-2 flex gap-3 mt-2">
                 <button type="submit" className="px-6 py-3.5 rounded-2xl bg-white text-black font-black text-xs uppercase tracking-wider shadow-lg shadow-white/20 hover:scale-105 transition-all">
-                  Save Medicine
+                  {editingMedId ? "Update Medicine" : "Save Medicine"}
                 </button>
-                <button type="button" onClick={() => setShowAddForm(false)} className="px-6 py-3.5 rounded-2xl bg-zinc-900 text-zinc-400 border border-zinc-800 font-black text-xs uppercase tracking-wider hover:text-white transition-all">
+                <button type="button" onClick={() => { setShowAddForm(false); resetForm(); }} className="px-6 py-3.5 rounded-2xl bg-zinc-900 text-zinc-400 border border-zinc-800 font-black text-xs uppercase tracking-wider hover:text-white transition-all">
                   Cancel
                 </button>
               </div>
@@ -367,6 +458,9 @@ export default function MedsPage() {
                           </button>
                         </>
                       )}
+                      <button onClick={() => handleEditClick(med)} title="Edit Reminder" className="p-2 rounded-xl text-zinc-500 hover:text-blue-400 hover:bg-blue-500/10 transition-colors">
+                        <Edit2 className="w-4 h-4" />
+                      </button>
                       <button onClick={() => handleDeleteMed(med.id)} title="Delete Reminder" className="p-2 rounded-xl text-zinc-500 hover:text-rose-400 hover:bg-rose-500/10 transition-colors">
                         <Trash2 className="w-4 h-4" />
                       </button>

@@ -64,6 +64,48 @@ export default function GlobalMedAlarmNotifier() {
     };
   }, []);
 
+  // Offline Notification Triggers (Android/Chrome only)
+  useEffect(() => {
+    const syncOffline = async () => {
+      if (typeof window === "undefined" || !("serviceWorker" in navigator) || !("Notification" in window) || Notification.permission !== "granted") return;
+      // @ts-ignore
+      if (!('showTrigger' in Notification.prototype)) return;
+      
+      try {
+        const registration = await navigator.serviceWorker.ready;
+        const now = new Date();
+        const todayStr = now.toISOString().split("T")[0];
+        const day = getDayData(todayStr);
+        
+        day.meds.forEach(med => {
+          if (med.status !== "pending") return;
+          const [hStr, mStr] = med.scheduledTime.split(":");
+          const targetDate = new Date();
+          targetDate.setHours(parseInt(hStr, 10), parseInt(mStr, 10), 0, 0);
+          
+          if (targetDate.getTime() > Date.now()) {
+            const alarmKey = `offline_${todayStr}_${med.id}`;
+            // @ts-ignore
+            registration.showNotification(`⏰ Medication: ${med.name}`, {
+              tag: alarmKey,
+              body: `Time to take ${med.name} (${med.dosage}) - ${format12Hour(med.scheduledTime)}`,
+              icon: "/logo.png",
+              requireInteraction: true,
+              // @ts-ignore
+              showTrigger: new window.TimestampTrigger(targetDate.getTime())
+            }).catch(() => {});
+          }
+        });
+      } catch (e) {
+        console.warn("Offline trigger error:", e);
+      }
+    };
+    
+    syncOffline();
+    const interval = setInterval(syncOffline, 5 * 60 * 1000); // Re-sync every 5 mins
+    return () => clearInterval(interval);
+  }, []);
+
   const stopAlarm = useCallback(() => {
     stopSpeech();
   }, []);
