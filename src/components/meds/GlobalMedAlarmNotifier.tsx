@@ -5,6 +5,7 @@ import { Pill, Bell, VolumeX, CheckCircle, Clock, X, Volume2 } from "lucide-reac
 import { getDayData, saveDayData, type MedEntry } from "@/lib/healthStore";
 import { speakMedicationAlert, startRepeatingVoiceAlert, stopSpeech } from "@/lib/speechSynthesis";
 import BorderGlow from "@/components/ui/BorderGlow";
+import { supabase } from "@/lib/supabase";
 
 const MONO_GLOW = {
   backgroundColor: "#09090b",
@@ -28,82 +29,44 @@ export default function GlobalMedAlarmNotifier() {
   const [alarmMed, setAlarmMed] = useState<MedEntry | null>(null);
   const triggeredAlarmsRef = useRef<Set<string>>(new Set());
 
-  // Register Service Worker and request desktop notification permissions
+  // Web Push Subscription Logic
   useEffect(() => {
-    if (typeof window !== "undefined" && "serviceWorker" in navigator) {
-      navigator.serviceWorker.register("/sw.js").catch(() => null);
-    }
-    if (typeof window !== "undefined" && "Notification" in window) {
-      if (Notification.permission === "default") {
-        Notification.requestPermission().catch(() => null);
-      }
-    }
-  }, []);
-
-  // Background keep-awake hack to prevent JS timer throttling on mobile/locked screen
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    // Tiny silent wav base64
-    const audio = new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA");
-    audio.loop = true;
-    audio.volume = 0.01;
-    
-    const unlockAudio = () => {
-      audio.play().catch(() => {});
-      document.removeEventListener("click", unlockAudio);
-      document.removeEventListener("touchstart", unlockAudio);
-    };
-
-    document.addEventListener("click", unlockAudio);
-    document.addEventListener("touchstart", unlockAudio);
-
-    return () => {
-      audio.pause();
-      document.removeEventListener("click", unlockAudio);
-      document.removeEventListener("touchstart", unlockAudio);
-    };
-  }, []);
-
-  // Offline Notification Triggers (Android/Chrome only)
-  useEffect(() => {
-    const syncOffline = async () => {
-      if (typeof window === "undefined" || !("serviceWorker" in navigator) || !("Notification" in window) || Notification.permission !== "granted") return;
-      // @ts-ignore
-      if (!('showTrigger' in Notification.prototype)) return;
-      
-      try {
-        const registration = await navigator.serviceWorker.ready;
-        const now = new Date();
-        const todayStr = now.toISOString().split("T")[0];
-        const day = getDayData(todayStr);
-        
-        day.meds.forEach(med => {
-          if (med.status !== "pending") return;
-          const [hStr, mStr] = med.scheduledTime.split(":");
-          const targetDate = new Date();
-          targetDate.setHours(parseInt(hStr, 10), parseInt(mStr, 10), 0, 0);
+    async function setupPush() {
+      if (typeof window !== "undefined" && "serviceWorker" in navigator && "PushManager" in window) {
+        try {
+          const registration = await navigator.serviceWorker.register("/sw.js");
           
-          if (targetDate.getTime() > Date.now()) {
-            const alarmKey = `offline_${todayStr}_${med.id}`;
-            // @ts-ignore
-            registration.showNotification(`⏰ Medication: ${med.name}`, {
-              tag: alarmKey,
-              body: `Time to take ${med.name} (${med.dosage}) - ${format12Hour(med.scheduledTime)}`,
-              icon: "/logo.png",
-              requireInteraction: true,
-              // @ts-ignore
-              showTrigger: new window.TimestampTrigger(targetDate.getTime())
-            }).catch(() => {});
+          if (Notification.permission === "default") {
+            const perm = await Notification.requestPermission();
+            if (perm !== "granted") return;
+          } else if (Notification.permission !== "granted") {
+            return;
           }
-        });
-      } catch (e) {
-        console.warn("Offline trigger error:", e);
+
+          const subscription = await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
+          });
+
+          // Save subscription to backend
+          const { data: userData } = await supabase.auth.getUser();
+          if (userData?.user?.id) {
+            await fetch("/api/push/subscribe", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                subscription,
+                userId: userData.user.id
+              })
+            });
+          }
+
+        } catch (err) {
+          console.error("Push Setup Error:", err);
+        }
       }
-    };
-    
-    syncOffline();
-    const interval = setInterval(syncOffline, 5 * 60 * 1000); // Re-sync every 5 mins
-    return () => clearInterval(interval);
+    }
+    setupPush();
   }, []);
 
   const stopAlarm = useCallback(() => {
@@ -118,7 +81,7 @@ export default function GlobalMedAlarmNotifier() {
     }
   }, [stopAlarm]);
 
-  // App-wide Alarm Monitoring Loop
+  // App-wide Alarm Monitoring Loop (For active foreground app only)
   const checkAlarms = useCallback(() => {
     if (typeof window === "undefined") return;
     const now = new Date();
@@ -144,20 +107,6 @@ export default function GlobalMedAlarmNotifier() {
           triggeredAlarmsRef.current.add(alarmKey);
           setAlarmMed(med);
           playAlarm(med);
-
-          // Desktop System Notification
-          if ("Notification" in window && Notification.permission === "granted") {
-            try {
-              new Notification(`⏰ Medication Alarm: ${med.name}`, {
-                body: `Time to take ${med.name} (${med.dosage}) - ${format12Hour(med.scheduledTime)}`,
-                icon: "/logo.png",
-                tag: alarmKey,
-                requireInteraction: true,
-              });
-            } catch (e) {
-              console.warn("Desktop notification error:", e);
-            }
-          }
         }
       }
     });
@@ -165,38 +114,9 @@ export default function GlobalMedAlarmNotifier() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-
-    // Use a Web Worker to ensure the timer isn't throttled when the tab is in the background
-    const workerCode = `
-      let intervalId = null;
-      self.onmessage = function(e) {
-        if (e.data === "start") {
-          intervalId = setInterval(() => {
-            self.postMessage("tick");
-          }, 6000);
-        } else if (e.data === "stop") {
-          clearInterval(intervalId);
-        }
-      };
-    `;
-    const blob = new Blob([workerCode], { type: "application/javascript" });
-    const workerUrl = URL.createObjectURL(blob);
-    const worker = new Worker(workerUrl);
-
-    worker.onmessage = (e) => {
-      if (e.data === "tick") {
-        checkAlarms();
-      }
-    };
-
-    worker.postMessage("start");
-    checkAlarms(); // Initial check
-
-    return () => {
-      worker.postMessage("stop");
-      worker.terminate();
-      URL.revokeObjectURL(workerUrl);
-    };
+    checkAlarms();
+    const interval = setInterval(checkAlarms, 10000); // Check every 10s while app is open
+    return () => clearInterval(interval);
   }, [checkAlarms]);
 
   const handleMarkTaken = (medId: string) => {
@@ -221,16 +141,12 @@ export default function GlobalMedAlarmNotifier() {
       saveDayData(day);
 
       // Reschedule 10 minutes later
-      setTimeout(() => {
-        const resetDay = getDayData();
-        const resetMed = resetDay.meds.find((m) => m.id === medId);
-        if (resetMed && resetMed.status === "snoozed") {
-          resetMed.status = "pending";
-          saveDayData(resetDay);
-          setAlarmMed(resetMed);
-          playAlarm(resetMed);
-        }
-      }, 10 * 60 * 1000);
+      const [h, m] = med.scheduledTime.split(":").map(Number);
+      const newTime = new Date();
+      newTime.setHours(h, m + 10, 0, 0);
+      med.scheduledTime = `${newTime.getHours().toString().padStart(2, "0")}:${newTime.getMinutes().toString().padStart(2, "0")}`;
+      med.status = "pending";
+      saveDayData(day);
     }
     setAlarmMed(null);
   };
