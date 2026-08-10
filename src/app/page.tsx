@@ -67,7 +67,7 @@ export default function SmartDashboard() {
 
   if (isAuthenticated === null || showSplash) {
     return (
-      <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#121421]" suppressHydrationWarning>
+      <div className="fixed inset-0 z-[999] flex flex-col items-center justify-center bg-[#121421]" suppressHydrationWarning>
         <div className="flex flex-col items-center gap-5 animate-in fade-in zoom-in duration-700" suppressHydrationWarning>
           <div className="w-24 h-24 rounded-[2rem] overflow-hidden flex items-center justify-center shadow-[0_0_50px_rgba(25,71,147,0.5)] border border-[#727578]/50" suppressHydrationWarning>
             <img src="/logo.png" alt="ControL-D Logo" className="w-full h-full object-cover" />

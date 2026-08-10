@@ -120,18 +120,8 @@ export default function Header({ onMenuClick }: HeaderProps) {
         <BorderGlow {...OVERVIEW_GLOW} className="w-full">
           <div className="h-16 flex items-center justify-between px-2 sm:px-6 w-full gap-1.5 sm:gap-2 bg-gradient-to-r from-[#727578]/15 via-[#121421] to-[#121421] rounded-[24px] border border-[#727578]/30" suppressHydrationWarning>
             
-            {/* Left: Mobile Menu Button & Glowing Patient Info */}
+            {/* Left: Glowing Patient Info */}
             <div className="flex items-center gap-1.5 sm:gap-2 flex-1 min-w-0" suppressHydrationWarning>
-              {onMenuClick && (
-                <button
-                  onClick={onMenuClick}
-                  className="p-1.5 rounded-2xl bg-[#121421] border border-[#727578]/40 text-[#194793] lg:hidden hover:border-[#194793] transition-all shrink-0"
-                  title="Open Navigation"
-                >
-                  <Menu className="w-5 h-5" />
-                </button>
-              )}
-
               {profile?.name && (
                 <div className="flex items-center gap-1 sm:gap-3 flex-1 min-w-0" suppressHydrationWarning>
                   <span className="text-xs font-semibold text-[#727578] hidden lg:inline shrink-0">Active Patient:</span>

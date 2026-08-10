@@ -13,6 +13,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isLoginPage = pathname === "/login";
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [aiChatOpen, setAiChatOpen] = useState(false);
 
   if (isLoginPage) {
     return (
@@ -24,7 +25,13 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <Sidebar isOpen={mobileSidebarOpen} onClose={() => setMobileSidebarOpen(false)} />
+      <Sidebar 
+        isOpen={mobileSidebarOpen} 
+        onClose={() => setMobileSidebarOpen(false)} 
+        onOpen={() => setMobileSidebarOpen(true)}
+        aiChatOpen={aiChatOpen}
+        onAIToggle={() => setAiChatOpen(!aiChatOpen)}
+      />
       <div className="lg:pl-64 pl-0 flex flex-col min-h-screen relative z-10 w-full min-w-0 overflow-x-clip" suppressHydrationWarning>
         <Header onMenuClick={() => setMobileSidebarOpen(true)} />
         <main className="flex-1 px-2 sm:px-6 pt-0 pb-6 w-full min-w-0" suppressHydrationWarning>
@@ -33,7 +40,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       </div>
       <WaterReminderToast />
       <GlobalMedAlarmNotifier />
-      <FloatingAIChat />
+      <FloatingAIChat isOpen={aiChatOpen} onClose={() => setAiChatOpen(false)} onOpen={() => setAiChatOpen(true)} />
     </>
   );
 }
