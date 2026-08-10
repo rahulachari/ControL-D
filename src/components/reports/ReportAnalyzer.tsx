@@ -7,8 +7,8 @@ import {
 } from "lucide-react";
 import BorderGlow from "@/components/ui/BorderGlow";
 import { fontOptions } from "@/lib/multilingualSpeech";
-import { SAMPLE_LAB_REPORTS, type ExtractedReportData } from "@/lib/reportParser";
-import { addSugarReading } from "@/lib/healthStore";
+import { type ExtractedReportData } from "@/lib/reportParser";
+import { addSugarReading, type LabReport, saveLabReport, getLabReports, syncLabReportsFromSupabase } from "@/lib/healthStore";
 
 const OVERVIEW_GLOW = {
   backgroundColor: "#121421",
@@ -24,17 +24,33 @@ export default function ReportAnalyzer() {
   const [activeFileName, setActiveFileName] = useState<string>("");
   const [activeText, setActiveText] = useState<string>("");
   const [autoLogged, setAutoLogged] = useState(false);
+  const [history, setHistory] = useState<LabReport[]>([]);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Auto-analyze sample report on initial load
+  // Load history from local storage / Supabase on mount
   useEffect(() => {
-    if (!reportData && !loading) {
-      const defaultSample = SAMPLE_LAB_REPORTS[0];
-      setActiveFileName(defaultSample.fileName);
-      setActiveText(defaultSample.rawText);
-      runAnalysis(defaultSample.rawText, defaultSample.fileName, "te-IN");
-    }
+    syncLabReportsFromSupabase().then((data) => {
+      setHistory(data);
+      if (data.length > 0 && !reportData && !loading) {
+        // Load the latest report automatically
+        const latest = data[0];
+        setActiveFileName(latest.file_name);
+        setReportData({
+          patientInfo: {
+            patientName: "Patient",
+            age: 30,
+            testDate: latest.test_date,
+            labName: latest.file_name
+          },
+          parameters: latest.parameters,
+          overallSummary: latest.overall_summary,
+          actionPlan: latest.action_plan,
+          speechTranscript: "",
+          speechPhonetic: ""
+        });
+      }
+    });
   }, []);
 
   const handleFileUpload = async (file: File) => {
@@ -45,61 +61,91 @@ export default function ReportAnalyzer() {
 
     try {
       let extractedText = "";
+      let base64Image = "";
 
-      if (file.type.includes("text") || file.name.endsWith(".txt")) {
-        extractedText = await file.text();
+      if (file.type.includes("pdf")) {
+        const formData = new FormData();
+        formData.append("file", file);
+        const res = await fetch("/api/extract-pdf", { method: "POST", body: formData });
+        if (!res.ok) throw new Error("Failed to extract PDF");
+        const json = await res.json();
+        extractedText = json.text;
+      } else if (file.type.includes("image")) {
+        const buffer = await file.arrayBuffer();
+        const base64 = btoa(new Uint8Array(buffer).reduce((data, byte) => data + String.fromCharCode(byte), ''));
+        base64Image = `data:${file.type};base64,${base64}`;
       } else {
-        extractedText = `PATIENT MEDICAL LAB REPORT\nFile Name: ${file.name}\nSize: ${(file.size / 1024).toFixed(1)} KB\nDate: ${new Date().toISOString().split("T")[0]}\nHbA1c: 7.1 %\nFasting Blood Sugar: 135 mg/dL\nPostprandial Sugar: 195 mg/dL\nTotal Cholesterol: 210 mg/dL\nSerum Creatinine: 0.9 mg/dL`;
+        extractedText = await file.text();
       }
 
       setActiveText(extractedText);
-      await runAnalysis(extractedText, file.name, selectedLang);
+      await runAnalysis(extractedText, base64Image, file.name, selectedLang);
     } catch (e) {
       console.error(e);
-      alert("Failed to read file. Please try a text or sample report.");
+      alert("Failed to analyze file. Ensure it's a valid PDF, Image, or Text file.");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSampleReport = async (sampleId: string) => {
-    const sample = SAMPLE_LAB_REPORTS.find((s) => s.id === sampleId) || SAMPLE_LAB_REPORTS[0];
-    setLoading(true);
-    setActiveFileName(sample.fileName);
-    setActiveText(sample.rawText);
+  const handleHistoryReport = (report: LabReport) => {
+    setActiveFileName(report.file_name);
+    setActiveText(report.raw_text || "");
     setAutoLogged(false);
-
-    try {
-      await runAnalysis(sample.rawText, sample.fileName, selectedLang);
-    } finally {
-      setLoading(false);
-    }
+    setReportData({
+      patientInfo: {
+        patientName: "Patient",
+        age: 30,
+        testDate: report.test_date,
+        labName: report.file_name
+      },
+      parameters: report.parameters,
+      overallSummary: report.overall_summary,
+      actionPlan: report.action_plan,
+      speechTranscript: "",
+      speechPhonetic: ""
+    });
   };
 
-  const runAnalysis = async (text: string, fileName: string, targetLang: string) => {
+  const runAnalysis = async (text: string, image: string, fileName: string, targetLang: string) => {
     try {
       const res = await fetch("/api/analyze-report", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text, language: targetLang, fileName }),
+        body: JSON.stringify({ text, image, language: targetLang, fileName }),
       });
 
       if (!res.ok) throw new Error("Analysis failed");
 
       const data: ExtractedReportData = await res.json();
       setReportData(data);
+
+      const newReport: LabReport = {
+        id: crypto.randomUUID(),
+        file_name: fileName,
+        test_date: data.patientInfo?.testDate || new Date().toISOString().split("T")[0],
+        overall_summary: data.overallSummary,
+        parameters: data.parameters,
+        action_plan: data.actionPlan || [],
+        raw_text: text,
+        created_at: new Date().toISOString()
+      };
+      
+      saveLabReport(newReport);
+      setHistory(getLabReports());
+
     } catch (e) {
       console.error("Analysis Error:", e);
+      alert("Analysis failed. Please try again.");
     }
   };
 
   const handleLanguageChange = async (newLang: string) => {
     setSelectedLang(newLang);
-
     if (activeText && activeFileName) {
       setLoading(true);
       try {
-        await runAnalysis(activeText, activeFileName, newLang);
+        await runAnalysis(activeText, "", activeFileName, newLang);
       } finally {
         setLoading(false);
       }
@@ -207,38 +253,42 @@ export default function ReportAnalyzer() {
           </BorderGlow>
         </div>
 
-        {/* Sample Lab Reports */}
+        {/* My Lab Reports */}
         <div className="md:col-span-5">
           <BorderGlow {...OVERVIEW_GLOW} className="w-full h-full">
-            <div className="p-4 sm:p-6 bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] rounded-[24px] border border-[#727578]/30 shadow-lg flex flex-col justify-between">
+            <div className="p-4 sm:p-6 bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] rounded-[24px] border border-[#727578]/30 shadow-lg flex flex-col justify-between h-full">
               <div>
                 <div className="flex items-center gap-2 mb-3">
                   <FileText className="w-5 h-5 text-[#194793]" />
                   <h3 className="text-sm font-heading font-black text-[#194793] uppercase tracking-wider">
-                    Instant Sample Reports
+                    My Recent Reports
                   </h3>
                 </div>
                 <p className="text-xs text-zinc-300 font-medium mb-4">
-                  Test analyzer in <strong className="text-[#194793]">{currentLangObj.nativeName}</strong>:
+                  View your securely stored analysis results:
                 </p>
 
-                <div className="space-y-2.5">
-                  {SAMPLE_LAB_REPORTS.map((sample) => (
+                <div className="space-y-2.5 max-h-[200px] overflow-y-auto pr-1">
+                  {history.length === 0 ? (
+                    <div className="text-xs text-zinc-500 font-medium p-4 text-center border border-dashed border-[#727578]/40 rounded-2xl">
+                      No reports uploaded yet.
+                    </div>
+                  ) : history.map((report) => (
                     <button
-                      key={sample.id}
-                      onClick={() => handleSampleReport(sample.id)}
+                      key={report.id}
+                      onClick={() => handleHistoryReport(report)}
                       className={`w-full p-3 sm:p-3.5 rounded-2xl border text-left transition-all flex items-center justify-between group ${
-                        activeFileName === sample.fileName
+                        activeFileName === report.file_name
                           ? "bg-[#194793]/20 border-[#194793]"
                           : "bg-[#121421] border-[#727578]/40 hover:border-[#194793]"
                       }`}
                     >
                       <div className="min-w-0 pr-2">
                         <span className="text-xs font-black text-white group-hover:text-[#194793] block truncate">
-                          {sample.title}
+                          {report.file_name}
                         </span>
                         <span className="text-[10px] text-zinc-400 font-bold block mt-0.5 truncate">
-                          {sample.labName} • {sample.patientName}
+                          Analyzed on {new Date(report.created_at).toLocaleDateString()}
                         </span>
                       </div>
                       <ArrowRight className="w-4 h-4 text-[#194793] shrink-0 group-hover:translate-x-1 transition-transform" />
@@ -249,7 +299,7 @@ export default function ReportAnalyzer() {
 
               <div className="mt-4 pt-3 border-t border-[#727578]/30 text-[11px] text-zinc-400 flex items-center gap-1.5 font-medium">
                 <ShieldCheck className="w-4 h-4 text-[#194793] shrink-0" />
-                <span>100% Private: All medical data is processed securely.</span>
+                <span>100% Private: All medical data is stored securely.</span>
               </div>
             </div>
           </BorderGlow>
@@ -262,7 +312,7 @@ export default function ReportAnalyzer() {
           <div className="p-6 sm:p-8 text-center bg-gradient-to-br from-[#727578]/15 via-[#121421]/90 to-[#121421] rounded-[24px] border border-[#727578]/30 shadow-xl space-y-4">
             <div className="animate-spin w-10 h-10 border-4 border-[#194793] border-t-transparent rounded-full mx-auto" />
             <h3 className="text-sm sm:text-base font-heading font-black text-[#194793] [text-shadow:1px_1px_0px_#121421]">
-              Translating Report to {currentLangObj.name} ({currentLangObj.nativeName})...
+              Analyzing Report in {currentLangObj.name} ({currentLangObj.nativeName})...
             </h3>
             <p className="text-xs text-zinc-300 font-medium">
               Generating clinical explanations & action plan.

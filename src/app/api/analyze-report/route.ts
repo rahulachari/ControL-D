@@ -81,17 +81,17 @@ const LOCALIZED_FALLBACKS: Record<string, { summary: string; speechNative: strin
 
 export async function POST(req: Request) {
   try {
-    const { text, language = "te-IN", fileName = "Medical_Report.pdf" } = await req.json();
+    const { text, image, language = "te-IN", fileName = "Medical_Report.pdf" } = await req.json();
 
-    if (!text || text.trim().length === 0) {
-      return NextResponse.json({ error: "No text content provided for analysis." }, { status: 400 });
+    if ((!text || text.trim().length === 0) && !image) {
+      return NextResponse.json({ error: "No content provided for analysis." }, { status: 400 });
     }
 
     const apiKey = (process.env.GROQ_API_KEY || process.env.NEXT_PUBLIC_GROQ_API_KEY || "").trim().replace(/^["']|["']$/g, '');
     const targetLangName = LANGUAGE_NAMES[language] || "Telugu (తెలుగు)";
 
     // Extracted clinical parameters localized for target language
-    const fallbackParams = extractClinicalParametersFromText(text, language);
+    const fallbackParams = extractClinicalParametersFromText(text || "", language);
     const fallbackInfo = LOCALIZED_FALLBACKS[language] || LOCALIZED_FALLBACKS["te-IN"];
 
     if (!apiKey || apiKey.includes("your-api-key")) {
@@ -154,10 +154,18 @@ Return ONLY valid JSON matching this exact structure:
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: "llama-3.3-70b-versatile",
+        model: image ? "llama-3.2-11b-vision-preview" : "llama-3.3-70b-versatile",
         messages: [
           { role: "system", content: systemPrompt },
-          { role: "user", content: `Analyze this lab report in ${targetLangName}:\n\n${text}` },
+          { 
+            role: "user", 
+            content: image 
+              ? [
+                  { type: "text", text: `Analyze this lab report in ${targetLangName}:` },
+                  { type: "image_url", image_url: { url: image } }
+                ] 
+              : `Analyze this lab report in ${targetLangName}:\n\n${text}` 
+          },
         ],
         temperature: 0.2,
         response_format: { type: "json_object" },

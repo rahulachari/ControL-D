@@ -24,6 +24,7 @@ export interface ExtractedReportData {
   overallSummary: string;
   actionPlan: string[];
   speechTranscript?: string;
+  speechPhonetic?: string;
   speechTranscripts?: Record<string, string>; // Language code -> transcript string
 }
 

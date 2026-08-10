@@ -502,3 +502,81 @@ export function getAIHealthTip(): string {
 
   return "Keep up the great work! Consistent tracking is the key to better health management. 🌟";
 }
+
+// --- Lab Reports ---
+export interface LabReport {
+  id: string;
+  file_name: string;
+  test_date: string;
+  overall_summary: string;
+  parameters: any[];
+  action_plan: string[];
+  raw_text?: string;
+  created_at: string;
+}
+
+export function saveLabReport(report: LabReport): void {
+  if (typeof window === "undefined") return;
+  const reports = getLabReports();
+  // Avoid duplicates
+  const existingIndex = reports.findIndex(r => r.id === report.id);
+  if (existingIndex >= 0) {
+    reports[existingIndex] = report;
+  } else {
+    reports.unshift(report);
+  }
+  localStorage.setItem("lab_reports", JSON.stringify(reports));
+
+  if (isSupabaseConfigured()) {
+    supabase.auth.getUser().then(({ data: userData }) => {
+      if (userData?.user?.id) {
+        supabase
+          .from("lab_reports")
+          .upsert({
+            id: report.id,
+            user_id: userData.user.id,
+            file_name: report.file_name,
+            test_date: report.test_date,
+            overall_summary: report.overall_summary,
+            parameters: report.parameters,
+            action_plan: report.action_plan,
+            raw_text: report.raw_text,
+            created_at: report.created_at
+          })
+          .then(({ error }) => {
+            if (error) console.warn("Supabase lab reports sync warning:", error);
+          });
+      }
+    });
+  }
+}
+
+export function getLabReports(): LabReport[] {
+  if (typeof window === "undefined") return [];
+  const raw = localStorage.getItem("lab_reports");
+  if (!raw) return [];
+  try {
+    return JSON.parse(raw) as LabReport[];
+  } catch {
+    return [];
+  }
+}
+
+export async function syncLabReportsFromSupabase(): Promise<LabReport[]> {
+  if (!isSupabaseConfigured() || typeof window === "undefined") return getLabReports();
+
+  const { data: userData } = await supabase.auth.getUser();
+  if (!userData?.user?.id) return getLabReports();
+
+  const { data, error } = await supabase
+    .from("lab_reports")
+    .select("*")
+    .eq("user_id", userData.user.id)
+    .order("created_at", { ascending: false });
+
+  if (!error && data) {
+    localStorage.setItem("lab_reports", JSON.stringify(data));
+    return data as LabReport[];
+  }
+  return getLabReports();
+}

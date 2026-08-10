@@ -64,3 +64,27 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 CREATE OR REPLACE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+-- 5. Lab Reports Table
+CREATE TABLE IF NOT EXISTS public.lab_reports (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  file_name TEXT NOT NULL,
+  test_date DATE,
+  overall_summary TEXT,
+  parameters JSONB,
+  action_plan JSONB,
+  raw_text TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE public.lab_reports ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view own lab reports" 
+  ON public.lab_reports FOR SELECT 
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert/update own lab reports" 
+  ON public.lab_reports FOR ALL 
+  USING (auth.uid() = user_id) 
+  WITH CHECK (auth.uid() = user_id);
