@@ -1,23 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Bell, Settings, Pill, Droplet, X, Info, Sparkles, Menu, Scale, Ruler, Calendar } from "lucide-react";
+import { Bell, Settings, Pill, Droplet, X, Info, Sparkles, Scale, Ruler, Calendar } from "lucide-react";
 import OnboardingModal, { UserProfile } from "@/components/profile/OnboardingModal";
 import { getDayData, getDailyMotivation, getLatestSugar } from "@/lib/healthStore";
-import BorderGlow from "@/components/ui/BorderGlow";
 
-interface HeaderProps {
-  onMenuClick?: () => void;
-}
-
-const OVERVIEW_GLOW = {
-  backgroundColor: "#121421",
-  glowColor: "215 71 34",
-  colors: ["#194793", "#727578", "#121421"],
-  borderRadius: 24,
-};
-
-export default function Header({ onMenuClick }: HeaderProps) {
+export default function Header() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
@@ -37,14 +25,13 @@ export default function Header({ onMenuClick }: HeaderProps) {
         }
       }
 
-      const options: Intl.DateTimeFormatOptions = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
+      const options: Intl.DateTimeFormatOptions = { weekday: 'long', month: 'short', day: 'numeric' };
       setCurrentDate(new Date().toLocaleDateString('en-US', options));
 
-      // Generate live notifications from current day data
+      // Generate live notifications
       const day = getDayData();
       const notifs = [];
 
-      // Meds notification
       const pendingMeds = day.meds.filter((m) => m.status === "pending");
       if (pendingMeds.length > 0) {
         notifs.push({
@@ -53,52 +40,31 @@ export default function Header({ onMenuClick }: HeaderProps) {
           desc: `Next: ${pendingMeds[0].name} at ${pendingMeds[0].scheduledTime}`,
           type: "med" as const,
           icon: Pill,
-          color: "text-zinc-200 bg-zinc-800",
-        });
-      } else {
-        notifs.push({
-          id: "meds_done",
-          title: "Medications On Track",
-          desc: "All scheduled medications taken so far today!",
-          type: "med" as const,
-          icon: Pill,
-          color: "text-zinc-200 bg-zinc-800",
+          color: "text-purple-400 bg-purple-500/10",
         });
       }
 
-      // Water notification
       const totalWater = day.water.reduce((s, w) => s + w.amount, 0);
       notifs.push({
         id: "water",
         title: "Hydration Status",
-        desc: `Logged ${(totalWater / 1000).toFixed(1)}L today. Stay hydrated!`,
+        desc: `Logged ${(totalWater / 1000).toFixed(1)}L today.`,
         type: "water" as const,
         icon: Droplet,
-        color: "text-zinc-200 bg-zinc-800",
+        color: "text-cyan-400 bg-cyan-500/10",
       });
 
-      // Sugar notification
       const lastSugar = getLatestSugar();
       if (lastSugar) {
         notifs.push({
           id: "sugar",
           title: `Latest Sugar: ${lastSugar.value} mg/dL`,
-          desc: `Logged context: ${lastSugar.context.replace(/_/g, " ")}`,
+          desc: `Context: ${lastSugar.context.replace(/_/g, " ")}`,
           type: "sugar" as const,
           icon: Info,
-          color: "text-zinc-200 bg-zinc-800",
+          color: "text-blue-400 bg-blue-500/10",
         });
       }
-
-      // Daily Motivation
-      notifs.push({
-        id: "tip",
-        title: "Daily Motivation",
-        desc: getDailyMotivation(),
-        type: "tip" as const,
-        icon: Sparkles,
-        color: "text-zinc-200 bg-zinc-800",
-      });
 
       setNotifications(notifs);
     }
@@ -116,117 +82,98 @@ export default function Header({ onMenuClick }: HeaderProps) {
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full pt-3 px-2 sm:px-6 mb-2 sm:mb-4" suppressHydrationWarning>
-        <BorderGlow {...OVERVIEW_GLOW} className="w-full">
-          <div className="h-16 flex items-center justify-between px-2 sm:px-6 w-full gap-1.5 sm:gap-2 bg-gradient-to-r from-[#727578]/15 via-[#121421] to-[#121421] rounded-[24px] border border-[#727578]/30" suppressHydrationWarning>
-            
-            {/* Left: Glowing Patient Info */}
-            <div className="flex items-center gap-1.5 sm:gap-2 flex-1 min-w-0" suppressHydrationWarning>
-              {profile?.name && (
-                <div className="flex items-center gap-1 sm:gap-3 flex-1 min-w-0" suppressHydrationWarning>
-                  <span className="text-xs font-semibold text-[#727578] hidden lg:inline shrink-0">Active Patient:</span>
-                  <span className="text-xs sm:text-sm font-extrabold text-[#194793] [text-shadow:1px_1px_0px_#121421] truncate max-w-[70px] min-[360px]:max-w-[120px] sm:max-w-none">{profile.name}</span>
-                  
-                  {/* Glowing Weight & Height Badges - Hidden on mobile to prevent overflow */}
-                  <div className="hidden md:flex items-center gap-1.5 shrink-0 ml-1" suppressHydrationWarning>
-                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#121421] text-zinc-200 border border-[#727578]/40 text-xs font-extrabold shadow-sm">
-                      <Calendar className="w-3 h-3 text-[#194793]" />
-                      {profile.age} yrs
-                    </span>
-                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#194793] text-white border border-[#194793] text-xs font-black shadow-md hover:scale-105 transition-all">
-                      <Scale className="w-3 h-3 text-white" />
-                      {profile.weight} kg
-                    </span>
-                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#194793] text-white border border-[#194793] text-xs font-black shadow-md hover:scale-105 transition-all">
-                      <Ruler className="w-3 h-3 text-white" />
-                      {profile.height || 175} cm
-                    </span>
-                  </div>
-                </div>
-              )}
+      <header className="sticky top-0 z-40 w-full pt-3 px-0 mb-4" suppressHydrationWarning>
+        <div className="h-16 flex items-center justify-between px-2 w-full gap-2 bg-[rgba(20,20,25,0.7)] backdrop-blur-[24px] rounded-[24px] border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.1)] relative overflow-hidden" suppressHydrationWarning>
+          
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 opacity-50 pointer-events-none" />
+
+          {/* Left: Patient Info */}
+          <div className="flex items-center gap-2 flex-1 min-w-0 relative z-10 pl-2" suppressHydrationWarning>
+            <div className="w-9 h-9 rounded-full overflow-hidden border border-white/10 bg-black/40 flex items-center justify-center p-1 shadow-sm shrink-0">
+               <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
             </div>
-
-            {/* Right: Date, Notifications & Profile Avatar */}
-            <div className="flex items-center gap-2 sm:gap-3 shrink-0" suppressHydrationWarning>
-              
-              {/* Daily Date & Day */}
-              {currentDate && (
-                <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#121421] border border-[#727578]/30 shadow-inner mr-1">
-                  <Calendar className="w-3.5 h-3.5 text-[#194793]" />
-                  <span className="text-xs font-bold text-zinc-300 tracking-wide">{currentDate}</span>
-                </div>
-              )}
-
-              {/* Notification Button & Drawer */}
-              <div className="relative" suppressHydrationWarning>
-                <button
-                  onClick={() => setIsNotifOpen(!isNotifOpen)}
-                  title="Notifications"
-                  className="p-2 sm:p-2.5 rounded-full bg-[#121421] hover:bg-[#194793] hover:text-white border border-[#727578]/40 text-[#194793] transition-all relative"
-                >
-                  <Bell className="w-4 h-4" />
-                  {notifications.length > 0 && (
-                    <>
-                      <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#194793] animate-ping" />
-                      <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#194793]" />
-                    </>
-                  )}
-                </button>
-
-                {/* Notification Popover Drawer */}
-                {isNotifOpen && (
-                  <div className="absolute right-0 top-12 w-[calc(100vw-32px)] max-w-xs sm:w-96 bg-[#121421]/95 backdrop-blur-2xl border border-[#727578]/40 rounded-3xl p-4 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-                    <div className="flex items-center justify-between pb-3 border-b border-[#727578]/30 mb-3">
-                      <div className="flex items-center gap-2">
-                        <Bell className="w-4 h-4 text-[#194793]" />
-                        <h4 className="text-sm font-heading font-extrabold text-[#194793]">Health Notifications</h4>
-                      </div>
-                      <button onClick={() => setIsNotifOpen(false)} className="p-1 text-zinc-400 hover:text-white">
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
-
-                    <div className="space-y-2.5 max-h-80 overflow-y-auto pr-1">
-                      {notifications.length === 0 ? (
-                        <p className="text-xs text-zinc-500 text-center py-4">No notifications</p>
-                      ) : (
-                        notifications.map((n) => {
-                          const IconComp = n.icon;
-                          return (
-                            <div key={n.id} className="p-3 rounded-2xl bg-[#727578]/10 border border-[#727578]/30 flex items-start gap-3 relative group">
-                              <div className="w-8 h-8 rounded-xl bg-[#194793] text-white flex items-center justify-center shrink-0 mt-0.5">
-                                <IconComp className="w-4 h-4" />
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <h5 className="text-xs font-bold text-[#194793]">{n.title}</h5>
-                                <p className="text-[11px] text-zinc-300 mt-0.5 leading-snug">{n.desc}</p>
-                              </div>
-                              <button onClick={() => dismissNotif(n.id)} className="text-zinc-500 hover:text-zinc-300 p-1">
-                                <X className="w-3.5 h-3.5" />
-                              </button>
-                            </div>
-                          );
-                        })
-                      )}
-                    </div>
-                  </div>
-                )}
+            {profile?.name && (
+              <div className="flex flex-col" suppressHydrationWarning>
+                <span className="text-xs font-medium text-zinc-400 leading-none mb-1">Hello,</span>
+                <span className="text-sm font-bold text-white leading-none truncate max-w-[120px]">{profile.name}</span>
               </div>
-
-              {/* Edit Profile Button */}
-              <button
-                onClick={() => setIsModalOpen(true)}
-                title="Edit Health Profile"
-                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#194793] border border-[#194793] text-white flex items-center justify-center font-heading font-black text-sm shadow-md hover:scale-105 transition-all relative shrink-0"
-              >
-                {initial}
-                <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-[#121421] border border-[#727578]/40 flex items-center justify-center" suppressHydrationWarning>
-                  <Settings className="w-2.5 h-2.5 text-white" />
-                </div>
-              </button>
-            </div>
+            )}
           </div>
-        </BorderGlow>
+
+          {/* Right: Date, Notifications & Profile Avatar */}
+          <div className="flex items-center gap-2 shrink-0 relative z-10 pr-1" suppressHydrationWarning>
+            
+            {/* Daily Date & Day */}
+            {currentDate && (
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/40 border border-white/5 shadow-inner mr-1">
+                <span className="text-xs font-semibold text-zinc-300">{currentDate}</span>
+              </div>
+            )}
+
+            {/* Notification Button */}
+            <div className="relative" suppressHydrationWarning>
+              <button
+                onClick={() => setIsNotifOpen(!isNotifOpen)}
+                className="w-10 h-10 rounded-full bg-black/40 hover:bg-white/10 border border-white/5 text-zinc-300 hover:text-white flex items-center justify-center transition-colors relative"
+              >
+                <Bell className="w-4 h-4" />
+                {notifications.length > 0 && (
+                  <>
+                    <span className="absolute top-2.5 right-2.5 w-1.5 h-1.5 rounded-full bg-purple-500 animate-ping" />
+                    <span className="absolute top-2.5 right-2.5 w-1.5 h-1.5 rounded-full bg-purple-500" />
+                  </>
+                )}
+              </button>
+
+              {/* Notification Drawer */}
+              {isNotifOpen && (
+                <div className="absolute right-0 top-14 w-[calc(100vw-32px)] max-w-xs bg-[rgba(20,20,25,0.95)] backdrop-blur-3xl border border-white/10 rounded-3xl p-4 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                  <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-3">
+                    <h4 className="text-sm font-bold text-white">Notifications</h4>
+                    <button onClick={() => setIsNotifOpen(false)} className="p-1 text-zinc-400 hover:text-white">
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  <div className="space-y-2.5 max-h-80 overflow-y-auto pr-1 custom-scrollbar">
+                    {notifications.length === 0 ? (
+                      <p className="text-xs text-zinc-500 text-center py-4">No notifications</p>
+                    ) : (
+                      notifications.map((n) => {
+                        const IconComp = n.icon;
+                        return (
+                          <div key={n.id} className="p-3 rounded-2xl bg-white/5 border border-white/5 flex items-start gap-3 relative">
+                            <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 mt-0.5 ${n.color}`}>
+                              <IconComp className="w-4 h-4" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h5 className="text-xs font-bold text-white">{n.title}</h5>
+                              <p className="text-[11px] text-zinc-400 mt-0.5 leading-snug">{n.desc}</p>
+                            </div>
+                            <button onClick={() => dismissNotif(n.id)} className="text-zinc-500 hover:text-zinc-300 p-1 shrink-0">
+                              <X className="w-3 h-3" />
+                            </button>
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Profile Button */}
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="w-10 h-10 rounded-full bg-gradient-to-tr from-purple-600 to-blue-500 text-white flex items-center justify-center font-bold text-sm shadow-md hover:scale-105 transition-all relative shrink-0 border border-white/20"
+            >
+              {initial}
+              <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#141419] border border-white/20 flex items-center justify-center" suppressHydrationWarning>
+                <Settings className="w-2.5 h-2.5 text-zinc-400" />
+              </div>
+            </button>
+          </div>
+        </div>
       </header>
 
       <OnboardingModal
