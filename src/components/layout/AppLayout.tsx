@@ -23,7 +23,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen bg-matrix bg-fixed text-white font-sans overflow-x-hidden flex flex-col pb-28 relative z-10" suppressHydrationWarning>
+    <div className="min-h-screen bg-matrix bg-fixed text-slate-900 font-sans overflow-x-hidden flex flex-col pb-28 relative z-10" suppressHydrationWarning>
       <Header />
       <main className="flex-1 px-4 pt-4 w-full max-w-2xl mx-auto flex flex-col" suppressHydrationWarning>
         {children}
