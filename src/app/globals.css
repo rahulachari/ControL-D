@@ -46,40 +46,40 @@
 }
 
 :root, .dark {
-  --bg-page: #f8fafc;
-  --background: #f8fafc;
-  --foreground: #0f172a;
-  --card: #ffffff;
-  --card-foreground: #0f172a;
-  --popover: #ffffff;
-  --popover-foreground: #0f172a;
-  --primary: #0ea5e9;
-  --primary-foreground: #ffffff;
-  --secondary: #f1f5f9;
-  --secondary-foreground: #334155;
-  --muted: #f1f5f9;
+  --bg-page: #121421;
+  --background: #121421;
+  --foreground: hsl(0, 0%, 100%);
+  --card: #121421;
+  --card-foreground: hsl(0, 0%, 100%);
+  --popover: #121421;
+  --popover-foreground: hsl(0, 0%, 100%);
+  --primary: #194793;
+  --primary-foreground: hsl(0, 0%, 100%);
+  --secondary: #727578;
+  --secondary-foreground: hsl(0, 0%, 100%);
+  --muted: #727578;
   --muted-foreground: hsl(215, 16%, 65%);
-  --accent: #0ea5e9;
-  --accent-foreground: #ffffff;
+  --accent: #194793;
+  --accent-foreground: hsl(0, 0%, 100%);
   --destructive: hsl(0, 84%, 60%);
-  --border: #e2e8f0;
-  --input: #e2e8f0;
-  --ring: #0ea5e9;
-  --chart-1: #0ea5e9;
+  --border: rgba(114, 117, 120, 0.4);
+  --input: rgba(114, 117, 120, 0.4);
+  --ring: #194793;
+  --chart-1: #194793;
   --chart-2: #727578;
   --chart-3: hsl(141, 53%, 43%);
   --chart-4: hsl(4, 82%, 59%);
   --chart-5: hsl(262, 71%, 63%);
   --radius: 16px;
   
-  --sidebar: #ffffff;
-  --sidebar-foreground: #0f172a;
-  --sidebar-primary: #0ea5e9;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f1f5f9;
-  --sidebar-accent-foreground: #334155;
-  --sidebar-border: #e2e8f0;
-  --sidebar-ring: #0ea5e9;
+  --sidebar: #121421;
+  --sidebar-foreground: hsl(0, 0%, 100%);
+  --sidebar-primary: #194793;
+  --sidebar-primary-foreground: hsl(0, 0%, 100%);
+  --sidebar-accent: #727578;
+  --sidebar-accent-foreground: hsl(0, 0%, 100%);
+  --sidebar-border: rgba(114, 117, 120, 0.4);
+  --sidebar-ring: #194793;
 }
 
 @layer base {
@@ -97,25 +97,24 @@
   }
 }
 
-/* Custom Minimal Clean UI Utilities */
+/* Custom 3D Royal Blue Heading & Cool Gray Card Utilities */
 .text-royal-3d {
-  color: #0ea5e9;
+  color: #194793;
+  text-shadow: 1.5px 1.5px 0px #121421;
 }
 
 .bg-cool-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+  background: linear-gradient(135deg, rgba(114, 117, 120, 0.15) 0%, rgba(18, 20, 33, 0.9) 100%);
+  border: 1px solid rgba(114, 117, 120, 0.35);
+  box-shadow: 0 10px 30px rgba(18, 20, 33, 0.5);
 }
 
 .border-cool-gray {
-  border-color: #e2e8f0;
+  border-color: rgba(114, 117, 120, 0.4);
 }
 
 .bg-matrix {
-  background-color: #f8fafc;
-  background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
-  background-size: 24px 24px;
+  background-color: #121421;
 }
 @keyframes float {
   0% { transform: translateY(0px) rotateY(0deg); }
